@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>灵息 LingXi — Apple Watch 原型预览</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ===== Reset & Base ===== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, 'SF Pro Display', 'PingFang SC', sans-serif;
+      background: #0a0a0f;
+      color: #F0EDE8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+
+    /* ===== Design Tokens ===== */
+    :root {
+      --moYuan: #000000;
+      --xuanYe: #0A0E14;
+      --shuangXue: #F0EDE8;
+      --yuanShanDai: #8A9B9B;
+      --xiuYan: #4A5568;
+      --anWen: #1A1A1E;
+      --yueBai: #D6ECF0;
+      --qingCi: #A8D8D8;
+      --ouHe: #E0B4C8;
+      --liuJin: #D4A853;
+      --zhuSha: #D4605A;
+      --yanZi: #B8A9C9;
+      --boWu: rgba(240, 237, 232, 0.06);
+      --youGuang: rgba(168, 216, 216, 0.15);
+    }
+
+    /* ===== Page Title ===== */
+    .page-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 4px;
+      color: var(--shuangXue);
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--yuanShanDai);
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Color Palette Display ===== */
+    .palette-section {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 48px;
+    }
+
+    .palette-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--yuanShanDai);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .color-chip {
+      width: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--xuanYe);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .color-chip .swatch {
+      height: 60px;
+      position: relative;
+    }
+
+    .color-chip .info {
+      padding: 8px;
+      text-align: center;
+    }
+
+    .color-chip .name {
+      font-size: 13px;
+      color: var(--shuangXue);
+      display: block;
+    }
+
+    .color-chip .hex {
+      font-size: 11px;
+      color: var(--xiuYan);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ===== Gradient Display ===== */
+    .gradient-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .gradient-chip {
+      flex: 1;
+      min-width: 140px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--moYuan);
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Watch Screens ===== */
+    .screens-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      max-width: 1200px;
+      margin-bottom: 48px;
+    }
+
+    .screen-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .screen-label {
+      font-size: 13px;
+      color: var(--yuanShanDai);
+      letter-spacing: 1px;
+    }
+
+    /* Apple Watch Frame */
+    .watch-frame {
+      width: 198px;
+      height: 242px;
+      border-radius: 40px;
+      background: var(--moYuan);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 3px #1a1a1a,
+        0 0 0 5px #2a2a2a,
+        0 20px 60px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    .watch-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .watch-content {
+      width: 100%;
+      height: 100%;
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== Screen 1: Home (灵境总览) ===== */
+    .home .status-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--qingCi);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .lotus-container {
+      width: 88px;
+      height: 88px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .lotus-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--youGuang) 0%, transparent 70%);
+      animation: lotusGlow 3s ease-in-out infinite alternate;
+    }
+
+    .lotus-svg {
+      position: relative;
+      z-index: 1;
+      animation: lotusBreathe 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 12px rgba(168, 216, 216, 0.3));
+    }
+
+    @keyframes lotusBreathe {
+      0% {
+        transform: scale(0.96);
+        opacity: 0.75;
+      }
+
+      100% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+    }
+
+    @keyframes lotusGlow {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    .realm-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--shuangXue);
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 140px;
+      height: 5px;
+      background: var(--anWen);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--ouHe), var(--qingCi));
+      animation: progressGrow 1.5s ease-out forwards;
+    }
+
+    @keyframes progressGrow {
+      from {
+        width: 0;
+      }
+    }
+
+    .health-data {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--yuanShanDai);
+    }
+
+    .health-data span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== Screen 2: 闭关结算 (仙品) ===== */
+    .sleep-reward .watch-content {
+      background: linear-gradient(180deg, rgba(10, 14, 20, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+      backdrop-filter: blur(10px);
+      justify-content: center;
+      padding: 16px 14px;
+    }
+
+    .reward-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--liuJin);
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 20px rgba(212, 168, 83, 0.3);
+    }
+
+    .reward-sparkle {
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+
+      0%,
+      100% {
+        opacity: 0.6;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .sleep-duration {
+      font-size: 28px;
+      font-weight: 100;
+      color: var(--shuangXue);
+      margin: 2px 0;
+      letter-spacing: 1px;
+    }
+
+    .sleep-deep {
+      font-size: 12px;
+      color: var(--qingCi);
+      margin-bottom: 10px;
+    }
+
+    .item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), rgba(168, 216, 216, 0.1));
+      border: 1px solid rgba(212, 168, 83, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 4px;
+      animation: itemDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes itemDrop {
+      from {
+        transform: translateY(-20px) scale(0.5);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .item-name {
+      font-size: 12px;
+      color: var(--liuJin);
+      margin-bottom: 6px;
+    }
+
+    .poetic-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--yuanShanDai);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      max-width: 150px;
+    }
+
+    .action-btn {
+      width: 140px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 2px;
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: var(--qingCi);
+      color: var(--moYuan);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(168, 216, 216, 0.3);
+    }
+
+    .btn-gold {
+      background: transparent;
+      color: var(--liuJin);
+      border: 1px solid rgba(212, 168, 83, 0.3);
+    }
+
+    .btn-gold:hover {
+      background: rgba(212, 168, 83, 0.1);
+    }
+
+    /* ===== Screen 3: 闭关 (未入定) ===== */
+    .sleep-bad .reward-title {
+      color: var(--zhuSha);
+      text-shadow: 0 0 20px rgba(212, 96, 90, 0.2);
+    }
+
+    .no-item {
+      font-size: 12px;
+      color: var(--xiuYan);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Screen 4: Heart Demon ===== */
+    .heart-demon .watch-content {
+      background: radial-gradient(circle at 50% 30%, rgba(212, 96, 90, 0.08) 0%, var(--moYuan) 70%);
+      justify-content: center;
+      padding: 16px 14px;
+    }
+
+    .demon-lotus {
+      animation: demonPulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes demonPulse {
+      0% {
+        opacity: 0.4;
+        filter: drop-shadow(0 0 8px rgba(212, 96, 90, 0.3));
+      }
+
+      100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 16px rgba(212, 96, 90, 0.6));
+      }
+    }
+
+    .demon-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #e8887e;
+      margin: 8px 0 6px;
+      letter-spacing: 2px;
+    }
+
+    .demon-text {
+      font-size: 12px;
+      color: var(--shuangXue);
+      text-align: center;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      max-width: 155px;
+    }
+
+    .btn-breathe {
+      background: var(--qingCi);
+      color: var(--moYuan);
+      margin-bottom: 6px;
+    }
+
+    .btn-dismiss {
+      background: transparent;
+      border: none;
+      color: var(--yuanShanDai);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px 12px;
+    }
+
+    /* ===== Screen 5: Journey ===== */
+    .journey .watch-content {
+      padding: 16px 14px;
+      align-items: flex-start;
+    }
+
+    .journey-label {
+      font-size: 12px;
+      color: var(--yuanShanDai);
+      margin-bottom: 4px;
+    }
+
+    .step-count {
+      font-size: 32px;
+      font-weight: 100;
+      color: var(--shuangXue);
+      line-height: 1;
+    }
+
+    .step-unit {
+      font-size: 13px;
+      color: var(--yuanShanDai);
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+
+    .rings-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .ring-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ring-svg {
+      width: 44px;
+      height: 44px;
+    }
+
+    .ring-label {
+      font-size: 11px;
+      color: var(--yuanShanDai);
+    }
+
+    .scenery-card {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0a1628 0%, #0f2027 50%, #0a1a14 100%);
+      border: 1px solid rgba(168, 216, 216, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scenery-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(168, 216, 216, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(214, 236, 240, 0.04) 0%, transparent 40%);
+    }
+
+    .scenery-name {
+      font-size: 12px;
+      color: var(--qingCi);
+      letter-spacing: 2px;
+      position: relative;
+    }
+
+    .journey-items {
+      font-size: 12px;
+      color: var(--yuanShanDai);
+    }
+
+    .journey-items span {
+      color: var(--ouHe);
+    }
+
+    /* ===== Screen 6: Collection ===== */
+    .collection .watch-content {
+      padding: 14px 10px;
+      align-items: stretch;
+    }
+
+    .collection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+
+    .collection-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 15px;
+      color: var(--shuangXue);
+      font-weight: 500;
+    }
+
+    .collection-count {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 12px;
+      color: var(--xiuYan);
+    }
+
+    .grade-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin: 6px 0 4px 4px;
+    }
+
+    .grade-xian {
+      color: var(--liuJin);
+    }
+
+    .grade-ling {
+      color: var(--qingCi);
+    }
+
+    .grade-fan {
+      color: var(--yuanShanDai);
+    }
+
+    .grade-shen {
+      color: var(--yanZi);
+    }
+
+    .item-glow-xian {
+      border-color: rgba(212, 168, 83, 0.3) !important;
+      box-shadow: 0 0 8px rgba(212, 168, 83, 0.15);
+    }
+
+    .item-glow-ling {
+      border-color: rgba(168, 216, 216, 0.2) !important;
+      box-shadow: 0 0 6px rgba(168, 216, 216, 0.1);
+    }
+
+    .item-glow-shen {
+      border-color: rgba(184, 169, 201, 0.3) !important;
+      box-shadow: 0 0 10px rgba(184, 169, 201, 0.2);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .grid-item {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--xuanYe);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 10px;
+      color: var(--shuangXue);
+    }
+
+    .grid-item .gi-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .grid-item.locked {
+      opacity: 0.25;
+    }
+
+    .grid-item.locked .gi-icon {
+      filter: grayscale(1) brightness(0.5);
+    }
+
+    /* ===== Screen 7: Breakthrough ===== */
+    .breakthrough .watch-content {
+      background: radial-gradient(circle at 50% 40%, rgba(212, 168, 83, 0.1) 0%, var(--moYuan) 60%);
+      justify-content: center;
+      padding: 16px 14px;
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--liuJin);
+      border-radius: 50%;
+      animation: particleBurst 2s ease-out infinite;
+    }
+
+    @keyframes particleBurst {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .bt-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--liuJin);
+      letter-spacing: 3px;
+      margin-bottom: 14px;
+      text-shadow: 0 0 24px rgba(212, 168, 83, 0.4);
+      animation: btGlow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes btGlow {
+      0% {
+        text-shadow: 0 0 12px rgba(212, 168, 83, 0.2);
+      }
+
+      100% {
+        text-shadow: 0 0 28px rgba(212, 168, 83, 0.5);
+      }
+    }
+
+    .old-realm {
+      font-size: 13px;
+      color: var(--xiuYan);
+      margin-bottom: 4px;
+      animation: fadeDown 1s ease-out;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      to {
+        opacity: 0.4;
+        transform: translateY(4px);
+      }
+    }
+
+    .bt-arrow {
+      font-size: 14px;
+      color: var(--liuJin);
+      opacity: 0.5;
+      margin: 4px 0;
+    }
+
+    .new-realm {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--liuJin);
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      animation: newRealmIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes newRealmIn {
+      from {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .bt-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--shuangXue);
+      text-align: center;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out 1.2s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ===== Screen 8: Onboarding ===== */
+    .onboarding .watch-content {
+      justify-content: center;
+    }
+
+    .ob-lotus {
+      animation: lotusBreathe 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 16px rgba(168, 216, 216, 0.4));
+      margin-bottom: 16px;
+    }
+
+    .ob-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--shuangXue);
+      text-align: center;
+      line-height: 1.5;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+
+    .ob-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ob-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--xiuYan);
+    }
+
+    .ob-dot.active {
+      background: var(--shuangXue);
+    }
+
+    /* ===== Complications ===== */
+    .comp-section {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 48px;
+    }
+
+    .comp-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .comp-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comp-label {
+      font-size: 11px;
+      color: var(--xiuYan);
+      letter-spacing: 1px;
+    }
+
+    .comp-circular {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--moYuan);
+      border: 2px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .comp-circular svg {
+      filter: drop-shadow(0 0 4px rgba(168, 216, 216, 0.4));
+    }
+
+    .comp-rect {
+      width: 180px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--moYuan);
+      border: 2px solid #222;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6px 12px;
+      gap: 4px;
+    }
+
+    .comp-rect-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--shuangXue);
+      font-weight: 300;
+    }
+
+    .comp-rect-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--anWen);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .comp-rect-fill {
+      height: 100%;
+      width: 72%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--ouHe), var(--qingCi));
+    }
+
+    .comp-rect-pct {
+      font-size: 10px;
+      color: var(--yuanShanDai);
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    .comp-corner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--moYuan);
+      border: 2px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .comp-corner-text {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--shuangXue);
+    }
+
+    .comp-inline {
+      height: 28px;
+      padding: 0 16px;
+      border-radius: 14px;
+      background: var(--moYuan);
+      border: 2px solid #222;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--shuangXue);
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Section Headers ===== */
+    .section-divider {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 32px 0 24px;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--anWen);
+    }
+
+    .section-divider span {
+      font-size: 14px;
+      color: var(--yuanShanDai);
+      letter-spacing: 4px;
+      white-space: nowrap;
+    }
+
+    /* ===== Home variants tab ===== */
+    .variant-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .variant-tab {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      border: 1px solid var(--anWen);
+      background: transparent;
+      color: var(--yuanShanDai);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .variant-tab.active {
+      border-color: var(--qingCi);
+      color: var(--qingCi);
+      background: rgba(168, 216, 216, 0.08);
+    }
+
+    /* ===== Agitated lotus variant ===== */
+    .lotus-agitated {
+      animation: lotusAgitated 1.5s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes lotusAgitated {
+      0% {
+        transform: scale(0.94);
+        opacity: 0.65;
+      }
+
+      100% {
+        transform: scale(1.06);
+        opacity: 1;
+      }
+    }
+
+    /* Home variant 2: 心绪微澜 */
+    .home-weilan .status-text {
+      color: var(--ouHe) !important;
+    }
+
+    .home-weilan .lotus-glow {
+      background: radial-gradient(circle, rgba(224, 180, 200, 0.15) 0%, transparent 70%) !important;
+    }
+
+    /* Home variant 3: 心魔暗生 */
+    .home-demon .status-text {
+      color: var(--zhuSha) !important;
+    }
+
+    .home-demon .lotus-glow {
+      background: radial-gradient(circle, rgba(212, 96, 90, 0.12) 0%, transparent 70%) !important;
+      animation: demonGlowBg 0.8s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes demonGlowBg {
+      0% {
+        opacity: 0.3;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ===== Typography Showcase ===== */
+    .typo-section {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 48px;
+    }
+
+    .typo-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--anWen);
+    }
+
+    .typo-meta {
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .typo-level {
+      font-size: 11px;
+      color: var(--qingCi);
+      letter-spacing: 1px;
+    }
+
+    .typo-spec {
+      font-size: 10px;
+      color: var(--xiuYan);
+      margin-top: 2px;
+    }
+
+    .typo-sample-display {
+      font-size: 32px;
+      font-weight: 100;
+      color: var(--shuangXue);
+    }
+
+    .typo-sample-title {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--shuangXue);
+      letter-spacing: 3px;
+    }
+
+    .typo-sample-headline {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--qingCi);
+    }
+
+    .typo-sample-body {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--shuangXue);
+      line-height: 1.5;
+    }
+
+    .typo-sample-caption {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--yuanShanDai);
+    }
+
+    .typo-sample-footnote {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--yuanShanDai);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <div class="page-title">灵 息</div>
+  <div class="page-subtitle">LingXi Design System Preview — watchOS</div>
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <div class="section-divider"><span>色彩体系</span></div>
+
+  <div class="palette-section">
+    <div class="palette-title">BASE COLORS (OLED)</div>
+    <div class="palette-row">
+      <div class="color-chip">
+        <div class="swatch" style="background:#000000; border-bottom: 1px solid #1a1a1a;"></div>
+        <div class="info"><span class="name">墨渊</span><span class="hex">#000000</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#0A0E14;"></div>
+        <div class="info"><span class="name">玄夜</span><span class="hex">#0A0E14</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#F0EDE8;"></div>
+        <div class="info"><span class="name">霜雪</span><span class="hex">#F0EDE8</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#8A9B9B;"></div>
+        <div class="info"><span class="name">远山黛</span><span class="hex">#8A9B9B</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#4A5568;"></div>
+        <div class="info"><span class="name">岫烟</span><span class="hex">#4A5568</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#1A1A1E;"></div>
+        <div class="info"><span class="name">暗纹</span><span class="hex">#1A1A1E</span></div>
+      </div>
+    </div>
+
+    <div class="palette-title">ACCENT COLORS</div>
+    <div class="palette-row">
+      <div class="color-chip">
+        <div class="swatch" style="background:#D6ECF0;"></div>
+        <div class="info"><span class="name">月白</span><span class="hex">#D6ECF0</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#A8D8D8;"></div>
+        <div class="info"><span class="name">青瓷</span><span class="hex">#A8D8D8</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#E0B4C8;"></div>
+        <div class="info"><span class="name">藕荷</span><span class="hex">#E0B4C8</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#D4A853;"></div>
+        <div class="info"><span class="name">鎏金</span><span class="hex">#D4A853</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#D4605A;"></div>
+        <div class="info"><span class="name">朱砂</span><span class="hex">#D4605A</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#B8A9C9;"></div>
+        <div class="info"><span class="name">烟紫</span><span class="hex">#B8A9C9</span></div>
+      </div>
+    </div>
+
+    <div class="palette-title">GRADIENTS</div>
+    <div class="gradient-row">
+      <div class="gradient-chip" style="background: linear-gradient(90deg, #D6ECF0, #A8D8D8);">莲光渐变</div>
+      <div class="gradient-chip" style="background: linear-gradient(90deg, #D6ECF0, #E0B4C8);">澜色渐变</div>
+      <div class="gradient-chip" style="background: linear-gradient(90deg, #E0B4C8, #A8D8D8);">灵气渐变</div>
+      <div class="gradient-chip" style="background: linear-gradient(90deg, #D4A853, #F0EDE8);">突破渐变</div>
+      <div class="gradient-chip" style="background: linear-gradient(90deg, #D4605A, #0A0E14); color: #F0EDE8;">魔心渐变
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TYPOGRAPHY ===== -->
+  <div class="section-divider"><span>字体层级</span></div>
+
+  <div class="typo-section">
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">DISPLAY</span><span class="typo-spec">32pt · ultraLight</span>
+      </div>
+      <span class="typo-sample-display">12,368 步</span>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">TITLE</span><span class="typo-spec">20pt · light</span></div>
+      <span class="typo-sample-title">清心境 · 凝神</span>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">HEADLINE</span><span class="typo-spec">17pt · medium</span></div>
+      <span class="typo-sample-headline">灵台清明</span>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">BODY</span><span class="typo-spec">15pt · regular</span></div>
+      <span class="typo-sample-body">仙子昨夜安睡如莲，容光焕发如初。</span>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">CAPTION</span><span class="typo-spec">13pt · regular</span></div>
+      <span class="typo-sample-caption">获得【天山雪莲】×1</span>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta"><span class="typo-level">FOOTNOTE</span><span class="typo-spec">12pt · light</span></div>
+      <span class="typo-sample-footnote">心率 68 BPM · HRV 52ms</span>
+    </div>
+  </div>
+
+  <!-- ===== WATCH SCREENS ===== -->
+  <div class="section-divider"><span>核心界面</span></div>
+
+  <div class="screens-grid">
+
+    <!-- Screen 1: Home - 灵台清明 -->
+    <div class="screen-container">
+      <div class="screen-label">灵境总览 · 灵台清明</div>
+      <div class="watch-frame home" id="homeScreen">
+        <div class="watch-content">
+          <div class="status-text">灵 台 清 明</div>
+          <div class="lotus-container">
+            <div class="lotus-glow"></div>
+            <svg class="lotus-svg" width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <!-- Lotus petals -->
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.9"
+                transform="rotate(0 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.8"
+                transform="rotate(30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.7"
+                transform="rotate(60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.7"
+                transform="rotate(-30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.8"
+                transform="rotate(-60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.6"
+                transform="rotate(90 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.6"
+                transform="rotate(-90 36 36)" />
+              <!-- Center -->
+              <circle cx="36" cy="36" r="6" fill="url(#lotusCenter)" opacity="0.9" />
+              <defs>
+                <linearGradient id="lotusGrad" x1="36" y1="8" x2="36" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#D6ECF0" stop-opacity="0.9" />
+                  <stop offset="1" stop-color="#A8D8D8" stop-opacity="0.4" />
+                </linearGradient>
+                <radialGradient id="lotusCenter">
+                  <stop stop-color="#F0EDE8" stop-opacity="0.8" />
+                  <stop offset="1" stop-color="#A8D8D8" stop-opacity="0.3" />
+                </radialGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="realm-name">清心境 · 凝神</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 53%;"></div>
+          </div>
+          <div style="font-size:10px; color: var(--xiuYan); margin-bottom: 8px;">修为 320 / 600</div>
+          <div class="health-data">
+            <span><svg width="10" height="10" viewBox="0 0 10 10">
+                <path d="M5 2C3.5 0 1 1 1 3.5C1 6 5 9 5 9S9 6 9 3.5C9 1 6.5 0 5 2Z" fill="#D4605A" opacity="0.7" />
+              </svg> 68</span>
+            <span style="color: var(--xiuYan);">HRV 52ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 1b: Home - 心绪微澜 -->
+    <div class="screen-container">
+      <div class="screen-label">灵境总览 · 心绪微澜</div>
+      <div class="watch-frame home home-weilan">
+        <div class="watch-content">
+          <div class="status-text">心 绪 微 澜</div>
+          <div class="lotus-container">
+            <div class="lotus-glow"></div>
+            <svg class="lotus-svg lotus-agitated" width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.9"
+                transform="rotate(0 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.8"
+                transform="rotate(30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.7"
+                transform="rotate(60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.7"
+                transform="rotate(-30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.8"
+                transform="rotate(-60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.6"
+                transform="rotate(90 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradPink)" opacity="0.6"
+                transform="rotate(-90 36 36)" />
+              <circle cx="36" cy="36" r="6" fill="url(#lotusCenter)" opacity="0.9" />
+              <defs>
+                <linearGradient id="lotusGradPink" x1="36" y1="8" x2="36" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#D6ECF0" stop-opacity="0.9" />
+                  <stop offset="1" stop-color="#E0B4C8" stop-opacity="0.5" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="realm-name">清心境 · 凝神</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 53%;"></div>
+          </div>
+          <div style="font-size:10px; color: var(--xiuYan); margin-bottom: 8px;">修为 320 / 600</div>
+          <div class="health-data">
+            <span><svg width="10" height="10" viewBox="0 0 10 10">
+                <path d="M5 2C3.5 0 1 1 1 3.5C1 6 5 9 5 9S9 6 9 3.5C9 1 6.5 0 5 2Z" fill="#E0B4C8" opacity="0.8" />
+              </svg> 82</span>
+            <span style="color: var(--xiuYan);">HRV 35ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 1c: Home - 心魔暗生 -->
+    <div class="screen-container">
+      <div class="screen-label">灵境总览 · 心魔暗生</div>
+      <div class="watch-frame home home-demon">
+        <div class="watch-content"
+          style="background: radial-gradient(circle at 50% 35%, rgba(212,96,90,0.06) 0%, #000 70%);">
+          <div class="status-text" style="color: var(--zhuSha);">心 魔 暗 生</div>
+          <div class="lotus-container">
+            <div class="lotus-glow"></div>
+            <svg class="lotus-svg demon-lotus" width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.9"
+                transform="rotate(0 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.8"
+                transform="rotate(30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.7"
+                transform="rotate(60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.7"
+                transform="rotate(-30 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.8"
+                transform="rotate(-60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.6"
+                transform="rotate(90 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.6"
+                transform="rotate(-90 36 36)" />
+              <circle cx="36" cy="36" r="6" fill="#D4605A" opacity="0.6" />
+              <defs>
+                <linearGradient id="lotusGradRed" x1="36" y1="8" x2="36" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#D4605A" stop-opacity="0.8" />
+                  <stop offset="1" stop-color="#0A0E14" stop-opacity="0.6" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="realm-name">清心境 · 凝神</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 53%;"></div>
+          </div>
+          <div style="font-size:10px; color: var(--xiuYan); margin-bottom: 8px;">修为 320 / 600</div>
+          <div class="health-data">
+            <span><svg width="10" height="10" viewBox="0 0 10 10">
+                <path d="M5 2C3.5 0 1 1 1 3.5C1 6 5 9 5 9S9 6 9 3.5C9 1 6.5 0 5 2Z" fill="#D4605A" />
+              </svg> 108</span>
+            <span style="color: var(--zhuSha);">HRV 22ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 2: Popups -->
+  <div class="screens-grid">
+
+    <!-- Screen 2: Sleep Reward (仙品) -->
+    <div class="screen-container">
+      <div class="screen-label">闭关结算 · 仙品</div>
+      <div class="watch-frame sleep-reward">
+        <div class="watch-content">
+          <div class="reward-title reward-sparkle">&#10023; 闭关圆满 &#10023;</div>
+          <div style="font-size: 12px; color: var(--yuanShanDai); margin-bottom: 2px;">昨夜安睡</div>
+          <div class="sleep-duration">7 时 42 分</div>
+          <div class="sleep-deep">深睡 23%</div>
+          <div class="item-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C8 3 5 8 5 12C5 16 8 21 12 21C16 21 19 16 19 12C19 8 16 3 12 3Z" fill="#D6ECF0"
+                opacity="0.6" />
+              <path d="M12 6C10 6 8 9 8 12C8 15 10 18 12 18C14 18 16 15 16 12C16 9 14 6 12 6Z" fill="#A8D8D8"
+                opacity="0.7" />
+              <circle cx="12" cy="11" r="2" fill="#F0EDE8" opacity="0.8" />
+            </svg>
+          </div>
+          <div class="item-name">获得【天山雪莲】</div>
+          <div class="poetic-text">仙子昨夜安睡如莲，<br>容光焕发如初。</div>
+          <button class="action-btn btn-primary">收入囊中</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Sleep Reward (未入定) -->
+    <div class="screen-container">
+      <div class="screen-label">闭关结算 · 未入定</div>
+      <div class="watch-frame sleep-reward sleep-bad">
+        <div class="watch-content">
+          <div class="reward-title">夜未安眠</div>
+          <div style="font-size: 12px; color: var(--yuanShanDai); margin-bottom: 2px;">昨夜仅眠</div>
+          <div class="sleep-duration">3 时 28 分</div>
+          <div class="sleep-deep" style="color: #e8887e;">深睡 6%</div>
+          <div class="no-item">— 无灵物掉落 —</div>
+          <div class="poetic-text" style="margin-bottom: 12px;">夜深露重，仙子<br>却未曾安眠……<br>元神耗损，切记<br>今夜早些入定护体。</div>
+          <button class="action-btn btn-primary" style="background: var(--yuanShanDai);">知道了</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 4: Heart Demon Alert -->
+    <div class="screen-container">
+      <div class="screen-label">心魔暗生 · 关怀弹窗</div>
+      <div class="watch-frame heart-demon">
+        <div class="watch-content">
+          <svg class="demon-lotus" width="44" height="44" viewBox="0 0 72 72" fill="none">
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.9"
+              transform="rotate(0 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.8"
+              transform="rotate(30 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.7"
+              transform="rotate(60 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.7"
+              transform="rotate(-30 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.8"
+              transform="rotate(-60 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.6"
+              transform="rotate(90 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGradRed)" opacity="0.6"
+              transform="rotate(-90 36 36)" />
+            <circle cx="36" cy="36" r="6" fill="#D4605A" opacity="0.5" />
+          </svg>
+          <div class="demon-title">心绪不宁</div>
+          <div class="demon-text">感应到仙子心绪不宁、气血翻涌，可是凡间俗务惹你烦忧？<br>且深呼吸，护住灵台。</div>
+          <button class="action-btn btn-breathe">开始调息</button>
+          <button class="btn-dismiss">知道了</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 3: Journey, Collection, Breakthrough -->
+  <div class="screens-grid">
+
+    <!-- Screen 5: Journey -->
+    <div class="screen-container">
+      <div class="screen-label">云游历练</div>
+      <div class="watch-frame journey">
+        <div class="watch-content">
+          <div class="journey-label">今日云游</div>
+          <div class="step-count">12,368</div>
+          <div class="step-unit">步</div>
+
+          <div class="rings-row">
+            <div class="ring-item">
+              <svg class="ring-svg" viewBox="0 0 44 44">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#1A1A1E" stroke-width="2.5" />
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#E0B4C8" stroke-width="2.5" stroke-linecap="round"
+                  stroke-dasharray="113" stroke-dashoffset="20" transform="rotate(-90 22 22)">
+                  <animate attributeName="stroke-dashoffset" from="113" to="20" dur="1s" fill="freeze" />
+                </circle>
+              </svg>
+              <span class="ring-label" style="color: var(--ouHe);">动</span>
+            </div>
+            <div class="ring-item">
+              <svg class="ring-svg" viewBox="0 0 44 44">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#1A1A1E" stroke-width="2.5" />
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#A8D8D8" stroke-width="2.5" stroke-linecap="round"
+                  stroke-dasharray="113" stroke-dashoffset="8" transform="rotate(-90 22 22)">
+                  <animate attributeName="stroke-dashoffset" from="113" to="8" dur="1.2s" fill="freeze" />
+                </circle>
+              </svg>
+              <span class="ring-label" style="color: var(--qingCi);">练</span>
+            </div>
+            <div class="ring-item">
+              <svg class="ring-svg" viewBox="0 0 44 44">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#1A1A1E" stroke-width="2.5" />
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#D4A853" stroke-width="2.5" stroke-linecap="round"
+                  stroke-dasharray="113" stroke-dashoffset="34" transform="rotate(-90 22 22)">
+                  <animate attributeName="stroke-dashoffset" from="113" to="34" dur="1.1s" fill="freeze" />
+                </circle>
+              </svg>
+              <span class="ring-label" style="color: var(--liuJin);">立</span>
+            </div>
+          </div>
+
+          <div class="scenery-card">
+            <span class="scenery-name">青云峰 · 晨雾</span>
+          </div>
+
+          <div class="journey-items">今日获得：<span>灵鹤羽</span> · <span>百花露</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 6: Collection -->
+    <div class="screen-container">
+      <div class="screen-label">灵物图鉴</div>
+      <div class="watch-frame collection">
+        <div class="watch-content">
+          <div class="collection-header">
+            <span class="collection-title">灵物图鉴</span>
+            <span class="collection-count">12/20</span>
+          </div>
+
+          <div class="grade-label grade-shen">— 神品 —</div>
+          <div class="item-grid" style="margin-bottom: 8px;">
+            <div class="grid-item item-glow-shen">
+              <span class="gi-icon">
+                <img src="assets/images/chaos_pearl_1772255500195.png" alt="混沌珠"
+                  style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+              </span>
+              <span style="color: var(--yanZi);">混沌珠</span>
+            </div>
+          </div>
+
+          <div class="grade-label grade-xian">— 仙品 —</div>
+          <div class="item-grid" style="margin-bottom: 8px;">
+            <div class="grid-item item-glow-xian">
+              <span class="gi-icon">
+                <img src="assets/images/tianshan_snow_lotus_1772255488581.png" alt="天山雪莲"
+                  style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+              </span>
+              <span style="color: var(--liuJin);">雪莲</span>
+            </div>
+            <div class="grid-item">
+              <span class="gi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="8" fill="#A8D8D8" opacity="0.3" />
+                  <circle cx="12" cy="12" r="4" fill="#D6ECF0" opacity="0.5" />
+                </svg>
+              </span>
+              <span>琼浆</span>
+            </div>
+            <div class="grid-item locked">
+              <span class="gi-icon" style="opacity:0.3; font-size:16px; color: var(--xiuYan);">?</span>
+              <span style="color: var(--xiuYan);">???</span>
+            </div>
+          </div>
+
+          <div class="grade-label grade-ling">— 灵品 —</div>
+          <div class="item-grid">
+            <div class="grid-item item-glow-ling">
+              <span class="gi-icon">
+                <img src="assets/images/morning_dew_1772255522171.png" alt="晨露凝珠"
+                  style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+              </span>
+              <span style="color: var(--qingCi);">晨露</span>
+            </div>
+            <div class="grid-item item-glow-ling">
+              <span class="gi-icon">
+                <img src="assets/images/crane_feather_1772255510561.png" alt="灵鹤羽"
+                  style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+              </span>
+              <span style="color: var(--qingCi);">鹤羽</span>
+            </div>
+            <div class="grid-item">
+              <span class="gi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="6" fill="#E0B4C8" opacity="0.3" />
+                  <circle cx="12" cy="10" r="3" fill="#D6ECF0" opacity="0.5" />
+                </svg>
+              </span>
+              <span>花露</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 7: Breakthrough -->
+    <div class="screen-container">
+      <div class="screen-label">境界突破</div>
+      <div class="watch-frame breakthrough">
+        <div class="watch-content">
+          <div class="particles">
+            <div class="particle" style="left:50%;top:40%; animation-delay:0s; --dx:-40px; --dy:-30px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.2s; --dx:35px; --dy:-40px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.4s; --dx:-20px; --dy:35px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.6s; --dx:45px; --dy:20px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.8s; --dx:-50px; --dy:10px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.3s; --dx:10px; --dy:-50px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.5s; --dx:-30px; --dy:-45px;"></div>
+            <div class="particle" style="left:50%;top:40%; animation-delay:0.7s; --dx:25px; --dy:40px;"></div>
+          </div>
+          <div class="bt-title">&#10022; 突破成功 &#10022;</div>
+          <div class="old-realm">清心境 · 凝神</div>
+          <div class="bt-arrow">&#11015;</div>
+          <div class="new-realm">清心境 · 固本</div>
+          <div class="bt-text">灵基已固，道心通明。<br>恭喜仙子，踏入新的境界。</div>
+          <button class="action-btn btn-gold"
+            style="opacity: 0; animation: fadeIn 0.5s ease-out 2s forwards;">继续修行</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 4: Onboarding -->
+  <div class="screens-grid">
+
+    <!-- Screen 8: Onboarding 1 -->
+    <div class="screen-container">
+      <div class="screen-label">引导页 1</div>
+      <div class="watch-frame onboarding">
+        <div class="watch-content">
+          <svg class="ob-lotus" width="64" height="64" viewBox="0 0 72 72" fill="none">
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.9" transform="rotate(0 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.8" transform="rotate(30 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.7" transform="rotate(60 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.7"
+              transform="rotate(-30 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.8"
+              transform="rotate(-60 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.6" transform="rotate(90 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="url(#lotusGrad)" opacity="0.6"
+              transform="rotate(-90 36 36)" />
+            <circle cx="36" cy="36" r="6" fill="url(#lotusCenter)" opacity="0.9" />
+          </svg>
+          <div class="ob-title">欢迎踏入<br>灵息世界</div>
+          <div class="ob-dots">
+            <div class="ob-dot active"></div>
+            <div class="ob-dot"></div>
+            <div class="ob-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 8b: Onboarding 2 -->
+    <div class="screen-container">
+      <div class="screen-label">引导页 2</div>
+      <div class="watch-frame onboarding">
+        <div class="watch-content" style="justify-content: center; gap: 6px;">
+          <div
+            style="font-size: 17px; font-weight: 300; color: var(--shuangXue); text-align: center; line-height: 1.4; letter-spacing: 2px; margin-bottom: 12px;">
+            你的健康<br>即是修行</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 0 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 3C6 1 3 2 3 5C3 8 8 12 8 12S13 8 13 5C13 2 10 1 8 3Z" fill="#D4605A" opacity="0.6" />
+              </svg>
+              <span style="font-size: 13px; color: var(--qingCi);">心率 → 灵台清心</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="5" fill="none" stroke="#B8A9C9" stroke-width="1.5" opacity="0.6" />
+                <path d="M8 4V8L10.5 10" stroke="#B8A9C9" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+              </svg>
+              <span style="font-size: 13px; color: var(--qingCi);">睡眠 → 驻颜闭关</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M3 13L8 3L13 13" fill="none" stroke="#D4A853" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" opacity="0.6" />
+              </svg>
+              <span style="font-size: 13px; color: var(--qingCi);">运动 → 云游历练</span>
+            </div>
+          </div>
+          <div class="ob-dots" style="margin-top: 12px;">
+            <div class="ob-dot"></div>
+            <div class="ob-dot active"></div>
+            <div class="ob-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 8c: Onboarding 3 -->
+    <div class="screen-container">
+      <div class="screen-label">引导页 3</div>
+      <div class="watch-frame onboarding">
+        <div class="watch-content" style="justify-content: center;">
+          <div
+            style="font-size: 17px; font-weight: 300; color: var(--shuangXue); text-align: center; line-height: 1.4; letter-spacing: 2px; margin-bottom: 8px;">
+            感应灵气<br>需要你的授权</div>
+          <div
+            style="font-size: 12px; color: var(--yuanShanDai); text-align: center; line-height: 1.5; margin-bottom: 16px; max-width: 150px;">
+            灵息需要读取你的健康数据，以感应身体灵气状态</div>
+          <button class="action-btn btn-primary">开启灵气感应</button>
+          <div class="ob-dots" style="margin-top: 12px;">
+            <div class="ob-dot"></div>
+            <div class="ob-dot"></div>
+            <div class="ob-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== COMPLICATIONS ===== -->
+  <div class="section-divider"><span>表盘组件</span></div>
+
+  <div class="comp-section">
+    <div class="comp-row">
+      <div class="comp-item">
+        <div class="comp-label">CIRCULAR</div>
+        <div class="comp-circular">
+          <svg width="24" height="24" viewBox="0 0 72 72" fill="none">
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.8" transform="rotate(0 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.6" transform="rotate(45 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.6" transform="rotate(-45 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(90 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(-90 36 36)" />
+            <circle cx="36" cy="36" r="5" fill="#D6ECF0" opacity="0.8" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-label">RECTANGULAR</div>
+        <div class="comp-rect">
+          <div class="comp-rect-top">
+            <svg width="12" height="12" viewBox="0 0 72 72" fill="none">
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.7" transform="rotate(0 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(60 36 36)" />
+              <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(-60 36 36)" />
+              <circle cx="36" cy="36" r="5" fill="#D6ECF0" opacity="0.7" />
+            </svg>
+            清心境 · 凝神
+          </div>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <div class="comp-rect-bar">
+              <div class="comp-rect-fill"></div>
+            </div>
+            <span class="comp-rect-pct">灵气 72%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-label">CORNER</div>
+        <div class="comp-corner">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#1A1A1E" stroke-width="3" />
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#D4A853" stroke-width="3" stroke-linecap="round"
+              stroke-dasharray="125.6" stroke-dashoffset="42" transform="rotate(-90 24 24)" opacity="0.8" />
+          </svg>
+          <span class="comp-corner-text" style="position: absolute;">68%</span>
+        </div>
+      </div>
+
+      <div class="comp-item">
+        <div class="comp-label">INLINE</div>
+        <div class="comp-inline">
+          <svg width="10" height="10" viewBox="0 0 72 72" fill="none">
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.7" transform="rotate(0 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(60 36 36)" />
+            <ellipse cx="36" cy="28" rx="8" ry="20" fill="#A8D8D8" opacity="0.5" transform="rotate(-60 36 36)" />
+          </svg>
+          清心境·凝神 · 灵台清明
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particle animation with CSS custom properties -->
+  <style>
+    .particle:nth-child(1) {
+      animation: p1 2s ease-out infinite;
+    }
+
+    .particle:nth-child(2) {
+      animation: p2 2s ease-out infinite 0.2s;
+    }
+
+    .particle:nth-child(3) {
+      animation: p3 2s ease-out infinite 0.4s;
+    }
+
+    .particle:nth-child(4) {
+      animation: p4 2s ease-out infinite 0.6s;
+    }
+
+    .particle:nth-child(5) {
+      animation: p5 2s ease-out infinite 0.8s;
+    }
+
+    .particle:nth-child(6) {
+      animation: p6 2s ease-out infinite 0.3s;
+    }
+
+    .particle:nth-child(7) {
+      animation: p7 2s ease-out infinite 0.5s;
+    }
+
+    .particle:nth-child(8) {
+      animation: p8 2s ease-out infinite 0.7s;
+    }
+
+    @keyframes p1 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-40px, -30px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p2 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(35px, -40px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p3 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-20px, 35px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p4 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(45px, 20px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p5 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50px, 10px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p6 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(10px, -50px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p7 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-30px, -45px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes p8 {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(25px, 40px) scale(0);
+        opacity: 0;
+      }
+    }
+  </style>
+
+</body>
+
+</html>

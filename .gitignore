@@ -1,0 +1,6 @@
+# Claude Code plugins (large node_modules)
+.claude/superdesign-mcp/node_modules/
+.claude/superdesign-mcp/dist/
+
+# macOS
+.DS_Store
