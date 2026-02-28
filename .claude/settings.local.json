@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:playbooks.com)",
+      "mcp__superdesign__superdesign_generate",
+      "mcp__superdesign__superdesign_iterate",
+      "mcp__superdesign__superdesign_extract_system",
+      "mcp__superdesign__superdesign_list",
+      "mcp__superdesign__superdesign_gallery",
+      "mcp__superdesign__superdesign_live_gallery",
+      "mcp__superdesign__superdesign_check_files"
+    ],
+    "deny": [
+      "mcp__superdesign__superdesign_delete",
+      "mcp__superdesign__superdesign_cleanup"
+    ]
+  }
+}

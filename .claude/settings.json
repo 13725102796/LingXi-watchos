@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "superdesign": {
+      "command": "/Users/maidong/.nvm/versions/node/v24.5.0/bin/node",
+      "args": ["/Users/maidong/Desktop/zyc/applewatch-mvp/.claude/superdesign-mcp/dist/index.js"]
+    }
+  }
+}
