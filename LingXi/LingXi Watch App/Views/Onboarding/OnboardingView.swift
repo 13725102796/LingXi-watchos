@@ -23,30 +23,29 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - 第1页：欢迎
+    // MARK: - 第1页：欢迎（匹配原型：莲花 SVG + 欢迎标题）
 
     private var page1: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 6) {
             Spacer()
-            Text("灵")
-                .font(.system(size: 44, weight: .ultraLight))
-                .foregroundStyle(LingXiColors.gold)
-            Text("息")
-                .font(.system(size: 32, weight: .thin))
+            // 与 HomeView 共用莲花组件，展示 calm 态（无心率数字）
+            HeartLotusView(state: .calm, heartRate: 0)
+                .padding(.bottom, 4)
+
+            Text("欢迎踏入")
+                .font(.system(size: 16, weight: .light, design: .serif))
+                .tracking(2)
+                .foregroundStyle(LingXiColors.textSecondary)
+
+            Text("灵息世界")
+                .font(.system(size: 19, weight: .light, design: .serif))
+                .tracking(3)
                 .foregroundStyle(LingXiColors.textPrimary)
-            Spacer()
-            Text(copy?.page1.subtitle ?? "以健康数据，铸修仙之道")
-                .font(LingXiFonts.caption)
-                .foregroundStyle(LingXiColors.textSecondary)
-                .multilineTextAlignment(.center)
-            Text(copy?.page1.body ?? "你的每一次呼吸，都将化为修仙的灵力。")
-                .font(LingXiFonts.caption)
-                .foregroundStyle(LingXiColors.textSecondary)
-                .multilineTextAlignment(.center)
+
             Spacer()
             nextButton(label: "踏入仙途") { currentPage = 1 }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 10)
     }
 
     // MARK: - 第2页：功能介绍

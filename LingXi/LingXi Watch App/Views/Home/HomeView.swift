@@ -4,42 +4,45 @@ import SwiftData
 struct HomeView: View {
 
     @Environment(AppState.self) private var appState
-    @Query private var profiles: [CultivationProfile]
-    @State private var lotusCalmSeconds: Int = 0
-    @State private var calmTimer: Timer?
 
     var body: some View {
         ZStack {
-            LingXiColors.backgroundGradient.ignoresSafeArea()
+            LingXiColors.background.ignoresSafeArea()
 
-            ScrollView {
-                VStack(spacing: 12) {
-                    // 境界标题
-                    realmHeader
+            VStack(spacing: 4) {
+                // 1. 状态文字（字距拉开，匹配原型 letter-spacing:4px）
+                Text(appState.lotusState.spacedLabel)
+                    .font(.system(size: 11, weight: .medium))
+                    .tracking(3)
+                    .foregroundStyle(appState.lotusState.color)
+                    .padding(.top, 14)
 
-                    // 莲花心率
-                    HeartLotusView(state: appState.lotusState,
-                                   heartRate: appState.currentHR)
-                        .padding(.vertical, 4)
+                // 2. 莲花（含心率）
+                HeartLotusView(state: appState.lotusState,
+                               heartRate: appState.currentHR)
 
-                    // 莲花状态文字
-                    Text(appState.lotusState.label)
-                        .font(LingXiFonts.caption)
-                        .foregroundStyle(appState.lotusState.color)
+                // 3. 境界名称（serif 风格，字距拉开）
+                Text(appState.realmName)
+                    .font(.system(size: 15, weight: .light, design: .serif))
+                    .tracking(2)
+                    .foregroundStyle(LingXiColors.textPrimary)
 
-                    // 修为进度条
-                    cultivationBar
+                // 4. 修为进度条（细 4px + 下方标签）
+                cultivationSection
+                    .padding(.horizontal, 24)
+                    .padding(.top, 2)
 
-                    // 今日数据摘要
-                    todaySummary
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
+                // 5. 今日心率+HRV（tiny inline，匹配原型 health-data 行）
+                healthRow
+                    .padding(.top, 4)
+
+                Spacer()
             }
         }
         .onAppear {
             HealthKitManager.shared.startHeartRateMonitoring { hr, hrv in
                 appState.currentHR = hr
+                appState.currentHRV = hrv
                 let newState = CultivationEngine.computeLotusState(hr: hr, hrv: hrv)
                 appState.lotusState = newState
                 LingXiKeys.lotus = newState
@@ -49,58 +52,34 @@ struct HomeView: View {
                     CultivationEngine.markHeartDemonTriggered()
                 }
             }
-            startCalmTimer()
         }
         .onDisappear {
             HealthKitManager.shared.stopHeartRateMonitoring()
-            calmTimer?.invalidate()
-            calmTimer = nil
         }
     }
 
-    // MARK: - 境界标题
+    // MARK: - 修为进度条（4px 细条）
 
-    private var realmHeader: some View {
-        VStack(spacing: 2) {
-            Text(appState.realmName)
-                .realmTitleStyle()
-            Text("第\(appState.realmLevel)境")
-                .font(LingXiFonts.caption)
-                .foregroundStyle(LingXiColors.textSecondary)
-        }
-    }
-
-    // MARK: - 修为进度条
-
-    private var cultivationBar: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Text("修为")
-                    .font(LingXiFonts.label)
-                    .foregroundStyle(LingXiColors.textSecondary)
-                Spacer()
-                Text("\(appState.cultivation)")
-                    .cultivationValueStyle()
-                Text("/ \(appState.nextThreshold)")
-                    .font(LingXiFonts.caption)
-                    .foregroundStyle(LingXiColors.textSecondary)
-            }
-
+    private var cultivationSection: some View {
+        VStack(spacing: 3) {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(LingXiColors.border)
-                        .frame(height: 6)
+                        .fill(Color(hex: "#1A1A1E"))
+                        .frame(height: 4)
                     Capsule()
-                        .fill(
-                            LinearGradient(colors: [LingXiColors.teal, LingXiColors.gold],
-                                          startPoint: .leading, endPoint: .trailing)
-                        )
-                        .frame(width: geo.size.width * progressRatio, height: 6)
+                        .fill(LingXiColors.progressGradient)
+                        .frame(width: geo.size.width * progressRatio, height: 4)
                         .animation(LingXiAnimations.progressFill, value: progressRatio)
                 }
             }
-            .frame(height: 6)
+            .frame(height: 4)
+
+            // 原型: "修为 320 / 600"
+            Text("修为 \(appState.cultivation) / \(appState.nextThreshold)")
+                .font(.system(size: 10))
+                .foregroundStyle(LingXiColors.textSecondary)
+                .tracking(1)
         }
     }
 
@@ -109,42 +88,28 @@ struct HomeView: View {
         return min(1.0, CGFloat(appState.cultivation) / CGFloat(appState.nextThreshold))
     }
 
-    // MARK: - 今日数据摘要
+    // MARK: - 心率 + HRV 行（原型 health-data 样式）
 
-    private var todaySummary: some View {
-        HStack(spacing: 0) {
-            summaryItem(icon: "figure.walk", value: "\(appState.todaySteps)", unit: "步")
-            Divider().frame(height: 24)
-            summaryItem(icon: "flame.fill", value: String(format: "%.0f", appState.todayCalories), unit: "卡")
-            Divider().frame(height: 24)
-            summaryItem(icon: "clock.fill", value: "\(appState.todayExercise)", unit: "分")
-        }
-        .padding(.vertical, 6)
-        .background(LingXiColors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-    }
-
-    private func summaryItem(icon: String, value: String, unit: String) -> some View {
-        VStack(spacing: 2) {
-            Image(systemName: icon)
-                .font(.caption2)
-                .foregroundStyle(LingXiColors.teal)
-            Text(value)
-                .font(LingXiFonts.label)
-                .foregroundStyle(LingXiColors.textPrimary)
-            Text(unit)
-                .font(.system(size: 9))
-                .foregroundStyle(LingXiColors.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - 灵台清明计时（calm 状态计时修为）
-
-    private func startCalmTimer() {
-        calmTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
-            guard appState.lotusState == .calm else { return }
-            lotusCalmSeconds += 60
+    private var healthRow: some View {
+        HStack(spacing: 12) {
+            // 心率
+            HStack(spacing: 3) {
+                Image(systemName: "heart.fill")
+                    .font(.system(size: 9))
+                    .foregroundStyle(LingXiColors.lotusDemon.opacity(0.7))
+                Text(appState.currentHR > 0 ? "\(Int(appState.currentHR))" : "--")
+                    .font(.system(size: 11, weight: .light).monospacedDigit())
+                    .foregroundStyle(LingXiColors.textPrimary)
+            }
+            // HRV
+            HStack(spacing: 2) {
+                Text("HRV")
+                    .font(.system(size: 9))
+                    .foregroundStyle(LingXiColors.textSecondary)
+                Text(appState.currentHRV > 0 ? "\(Int(appState.currentHRV))ms" : "--")
+                    .font(.system(size: 11, weight: .light).monospacedDigit())
+                    .foregroundStyle(LingXiColors.textSecondary)
+            }
         }
     }
 }

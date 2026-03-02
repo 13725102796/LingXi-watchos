@@ -633,6 +633,17 @@
 
     .journey-items span {
       color: var(--ouHe);
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .item-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      object-fit: cover;
+      vertical-align: middle;
     }
 
     /* ===== Screen 6: Collection ===== */
@@ -1470,11 +1481,7 @@
           <div class="sleep-duration">7 时 42 分</div>
           <div class="sleep-deep">深睡 23%</div>
           <div class="item-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C8 3 5 8 5 12C5 16 8 21 12 21C16 21 19 16 19 12C19 8 16 3 12 3Z" fill="#D6ECF0" opacity="0.5"/>
-              <path d="M12 6C10 6 8 9 8 12C8 15 10 18 12 18C14 18 16 15 16 12C16 9 14 6 12 6Z" fill="#A8D8D8" opacity="0.6"/>
-              <circle cx="12" cy="11" r="2" fill="#F0EDE8" opacity="0.7"/>
-            </svg>
+            <img src="assets/images/spirit-items/tianshan_xuelian.png" style="width:32px;height:32px;border-radius:6px;object-fit:cover" alt="天山雪莲">
           </div>
           <div class="item-name">获得【天山雪莲】</div>
           <div class="poetic-text">仙子昨夜安睡如莲，<br>容光焕发如初。</div>
@@ -1567,11 +1574,11 @@
             </div>
           </div>
 
-          <div class="scenery-card">
+          <div class="scenery-card" style="background-image:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.15)),url(assets/images/scenery/qingyunfeng_chenwu.png);background-size:cover;background-position:center top;">
             <span class="scenery-name">青云峰 · 晨雾</span>
           </div>
 
-          <div class="journey-items">今日获得：<span>灵鹤羽</span> · <span>百花露</span></div>
+          <div class="journey-items">今日获得：<span><img src="assets/images/spirit-items/lingheyu.png" class="item-thumb" alt="">鹤羽</span> · <span><img src="assets/images/spirit-items/baihualu.png" class="item-thumb" alt="">花露</span></div>
         </div>
       </div>
     </div>
@@ -1583,7 +1590,7 @@
         <div class="watch-content">
           <div class="collection-header">
             <span class="collection-title">灵物图鉴</span>
-            <span class="collection-count">12/20</span>
+            <span class="collection-count">13/20</span>
           </div>
 
           <div class="grade-label grade-shen">— 神品 —</div>
@@ -1593,6 +1600,18 @@
                 <img src="assets/images/spirit-items/hundunlingzhu.png" alt="混沌珠">
               </span>
               <span style="color: var(--yanZi);">混沌珠</span>
+            </div>
+            <div class="grid-item item-glow-shen">
+              <span class="gi-icon">
+                <img src="assets/images/spirit-items/fenghuangyu.png" alt="凤凰羽">
+              </span>
+              <span style="color: var(--yanZi);">凤凰羽</span>
+            </div>
+            <div class="grid-item item-glow-shen">
+              <span class="gi-icon">
+                <img src="assets/images/spirit-items/xingchensuipian.png" alt="星辰碎片">
+              </span>
+              <span style="color: var(--yanZi);">星辰片</span>
             </div>
           </div>
 
@@ -1604,23 +1623,22 @@
               </span>
               <span style="color: var(--liuJin);">雪莲</span>
             </div>
-            <div class="grid-item">
+            <div class="grid-item item-glow-xian">
               <span class="gi-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="8" fill="#A8D8D8" opacity="0.3"/>
-                  <circle cx="12" cy="12" r="4" fill="#D6ECF0" opacity="0.5"/>
-                </svg>
+                <img src="assets/images/spirit-items/qiongjiang.png" alt="琼浆">
               </span>
-              <span>琼浆</span>
+              <span style="color: var(--liuJin);">琼浆</span>
             </div>
-            <div class="grid-item locked">
-              <span class="gi-icon" style="color: var(--xiuYan); font-size: 16px;">?</span>
-              <span style="color: var(--xiuYan);">???</span>
+            <div class="grid-item item-glow-xian">
+              <span class="gi-icon">
+                <img src="assets/images/spirit-items/pantao.png" alt="蟠桃">
+              </span>
+              <span style="color: var(--liuJin);">蟠桃</span>
             </div>
           </div>
 
           <div class="grade-label grade-ling">— 灵品 —</div>
-          <div class="item-grid">
+          <div class="item-grid" style="margin-bottom: 8px;">
             <div class="grid-item item-glow-ling">
               <span class="gi-icon">
                 <img src="assets/images/spirit-items/chenlu.png" alt="晨露凝珠">
@@ -1633,14 +1651,31 @@
               </span>
               <span style="color: var(--qingCi);">鹤羽</span>
             </div>
+            <div class="grid-item item-glow-ling">
+              <span class="gi-icon">
+                <img src="assets/images/spirit-items/baihualu.png" alt="百花露">
+              </span>
+              <span style="color: var(--qingCi);">花露</span>
+            </div>
+          </div>
+
+          <div class="grade-label grade-fan">— 凡品 —</div>
+          <div class="item-grid">
             <div class="grid-item">
               <span class="gi-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="6" fill="#E0B4C8" opacity="0.3"/>
-                  <circle cx="12" cy="10" r="3" fill="#D6ECF0" opacity="0.5"/>
-                </svg>
+                <img src="assets/images/spirit-items/bibozhu.png" alt="碧波珠">
               </span>
-              <span>花露</span>
+              <span>碧波珠</span>
+            </div>
+            <div class="grid-item">
+              <span class="gi-icon">
+                <img src="assets/images/spirit-items/qingyunshi.png" alt="青云石">
+              </span>
+              <span>云石</span>
+            </div>
+            <div class="grid-item locked">
+              <span class="gi-icon" style="color: var(--xiuYan); font-size: 16px;">?</span>
+              <span style="color: var(--xiuYan);">???</span>
             </div>
           </div>
         </div>

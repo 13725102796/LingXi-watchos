@@ -7,15 +7,23 @@ struct SpiritItemCard: View {
 
     var body: some View {
         ZStack {
-            // 背景光晕
-            RoundedRectangle(cornerRadius: 10)
-                .fill(LingXiColors.surface)
+            // 背景 + 品级光晕边框（对应原型 item-glow-* 样式）
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color(hex: "#0A0E14").opacity(0.6))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(
-                            isUnlocked ? LingXiColors.gradeColor(for: item.gradeRank).opacity(0.5) : .clear,
+                            isUnlocked
+                                ? LingXiColors.gradeColor(for: item.gradeRank).opacity(0.35)
+                                : Color.white.opacity(0.04),
                             lineWidth: 1
                         )
+                )
+                .shadow(
+                    color: isUnlocked
+                        ? LingXiColors.gradeColor(for: item.gradeRank).opacity(0.15)
+                        : .clear,
+                    radius: 6
                 )
 
             if isUnlocked {
@@ -24,12 +32,13 @@ struct SpiritItemCard: View {
                 lockedContent
             }
         }
-        .frame(width: 56, height: 68)
+        .frame(width: 54, height: 60)
+        .opacity(isUnlocked ? 1.0 : 0.2)
     }
 
     private var unlockedContent: some View {
-        VStack(spacing: 3) {
-            // 灵物图片（使用 Assets，fallback 到 SF Symbol）
+        VStack(spacing: 2) {
+            // 灵物图片（对应原型 28×28px 图片）
             Group {
                 if let uiImage = UIImage(named: item.iconName) {
                     Image(uiImage: uiImage)
@@ -38,32 +47,32 @@ struct SpiritItemCard: View {
                 } else {
                     Image(systemName: "star.fill")
                         .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
+                        .font(.system(size: 22))
                 }
             }
-            .frame(width: 32, height: 32)
-            .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.6), radius: 4)
+            .frame(width: 28, height: 28)
+            .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.5), radius: 3)
 
+            // 短名称（对应原型 font-size:10px）
             Text(item.name)
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(LingXiColors.textPrimary)
+                .font(.system(size: 10))
+                .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-
-            Text(item.grade)
-                .font(.system(size: 8))
-                .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
+                .tracking(1)
         }
-        .padding(4)
+        .padding(.vertical, 4)
+        .padding(.horizontal, 2)
     }
 
     private var lockedContent: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 2) {
             Text("?")
-                .font(.system(size: 22, weight: .ultraLight))
-                .foregroundStyle(LingXiColors.textDisabled)
-            Text("未知")
+                .font(.system(size: 18, weight: .ultraLight))
+                .foregroundStyle(LingXiColors.textSecondary)
+            Text("???")
                 .font(.system(size: 9))
-                .foregroundStyle(LingXiColors.textDisabled)
+                .foregroundStyle(LingXiColors.textSecondary)
         }
     }
 }

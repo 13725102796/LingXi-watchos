@@ -1,0 +1,202 @@
+[
+  {
+    "id": "tianshan_xuelian",
+    "name": "天山雪莲",
+    "grade": "仙品",
+    "gradeRank": 4,
+    "source": "仙品闭关",
+    "iconName": "tianshan_xuelian",
+    "description": "生于万年寒冰之上，吸天地精华，入口即化，修为大涨。",
+    "weight": 5
+  },
+  {
+    "id": "hundunlingzhu",
+    "name": "混沌灵珠",
+    "grade": "神品",
+    "gradeRank": 5,
+    "source": "连续30日全达标",
+    "iconName": "hundunlingzhu",
+    "description": "混沌初开时凝聚之灵气所化，持之可感悟天地大道。",
+    "weight": 1
+  },
+  {
+    "id": "qingyunshi",
+    "name": "青云石",
+    "grade": "上品",
+    "gradeRank": 3,
+    "source": "上品闭关",
+    "iconName": "qingyunshi",
+    "description": "云端灵气凝聚而成，质地温润，助修士凝神静气。",
+    "weight": 15
+  },
+  {
+    "id": "baihualu",
+    "name": "百花露",
+    "grade": "中品",
+    "gradeRank": 2,
+    "source": "中品闭关",
+    "iconName": "baihualu",
+    "description": "百花盛开时收集的晨露，清甜甘洌，提振精神。",
+    "weight": 25
+  },
+  {
+    "id": "chenlu",
+    "name": "晨露",
+    "grade": "中品",
+    "gradeRank": 2,
+    "source": "基础历练",
+    "iconName": "chenlu",
+    "description": "清晨第一缕阳光照耀下的露珠，蕴含生机。",
+    "weight": 30
+  },
+  {
+    "id": "songfeng",
+    "name": "松风",
+    "grade": "下品",
+    "gradeRank": 1,
+    "source": "签到",
+    "iconName": "songfeng",
+    "description": "松林间拂过的清风，带着淡淡松香，令人心旷神怡。",
+    "weight": 40
+  },
+  {
+    "id": "fenghuangyu",
+    "name": "凤凰羽",
+    "grade": "仙品",
+    "gradeRank": 4,
+    "source": "连续7日全达标",
+    "iconName": "fenghuangyu",
+    "description": "传说中凤凰涅槃时落下的羽毛，蕴含不灭火焰之力。",
+    "weight": 3
+  },
+  {
+    "id": "hongmengzhilu",
+    "name": "鸿蒙之露",
+    "grade": "神品",
+    "gradeRank": 5,
+    "source": "连续15日全达标",
+    "iconName": "hongmengzhilu",
+    "description": "鸿蒙初辟时天地间凝聚的第一滴露水，包含万物之源。",
+    "weight": 2
+  },
+  {
+    "id": "jinlvsi",
+    "name": "金缕丝",
+    "grade": "上品",
+    "gradeRank": 3,
+    "source": "仙品历练",
+    "iconName": "jinlvsi",
+    "description": "仙山上生长的金色草叶，编织成丝可护体辟邪。",
+    "weight": 10
+  },
+  {
+    "id": "jiutianxuantie",
+    "name": "九天玄铁",
+    "grade": "神品",
+    "gradeRank": 5,
+    "source": "连续21日全达标",
+    "iconName": "jiutianxuantie",
+    "description": "从九天之外陨落的神铁，坚硬无比，蕴含星辰之力。",
+    "weight": 1
+  },
+  {
+    "id": "longxianxiang",
+    "name": "龙涎香",
+    "grade": "仙品",
+    "gradeRank": 4,
+    "source": "连续10日全达标",
+    "iconName": "longxianxiang",
+    "description": "上古神龙所遗之香，焚之可引天地灵气，助修炼事半功倍。",
+    "weight": 4
+  },
+  {
+    "id": "pantao",
+    "name": "蟠桃",
+    "grade": "神品",
+    "gradeRank": 5,
+    "source": "连续60日全达标",
+    "iconName": "pantao",
+    "description": "王母娘娘蟠桃园中的仙桃，三千年一开花，三千年一结果。",
+    "weight": 1
+  },
+  {
+    "id": "qiongjiang",
+    "name": "琼浆",
+    "grade": "仙品",
+    "gradeRank": 4,
+    "source": "灵台清明累计60分钟",
+    "iconName": "qiongjiang",
+    "description": "仙界宴席上才有的琼浆玉液，饮之延年益寿，修为精进。",
+    "weight": 5
+  },
+  {
+    "id": "taixulingzhi",
+    "name": "太虚灵芝",
+    "grade": "神品",
+    "gradeRank": 5,
+    "source": "灵台清明累计300分钟",
+    "iconName": "taixulingzhi",
+    "description": "生于太虚幻境的千年灵芝，服之可开天眼，洞察天机。",
+    "weight": 1
+  },
+  {
+    "id": "xingchensuipian",
+    "name": "星辰碎片",
+    "grade": "仙品",
+    "gradeRank": 4,
+    "source": "步数达10000步",
+    "iconName": "xingchensuipian",
+    "description": "从天际坠落的星辰残骸，蕴含着宇宙的奥秘与力量。",
+    "weight": 4
+  },
+  {
+    "id": "yehua",
+    "name": "夜华",
+    "grade": "上品",
+    "gradeRank": 3,
+    "source": "睡眠仙品",
+    "iconName": "yehua",
+    "description": "深夜月华凝聚而成，吸纳此物可使睡眠更加深邃安宁。",
+    "weight": 12
+  },
+  {
+    "id": "yusui",
+    "name": "玉髓",
+    "grade": "中品",
+    "gradeRank": 2,
+    "source": "睡眠上品",
+    "iconName": "yusui",
+    "description": "天然形成的玉石精华，温润如玉，养气安神。",
+    "weight": 20
+  },
+  {
+    "id": "lingheyu",
+    "name": "灵荷玉",
+    "grade": "上品",
+    "gradeRank": 3,
+    "source": "心率平稳累计30分钟",
+    "iconName": "lingheyu",
+    "description": "灵湖中莲花所凝之玉，持之令人心静如水，杂念尽消。",
+    "weight": 10
+  },
+  {
+    "id": "qingquan",
+    "name": "清泉",
+    "grade": "下品",
+    "gradeRank": 1,
+    "source": "首次签到",
+    "iconName": "qingquan",
+    "description": "山间清冽的泉水，虽无特殊灵力，却能洗涤心灵尘埃。",
+    "weight": 50
+  },
+  {
+    "id": "bibozhu",
+    "name": "碧波珠",
+    "grade": "中品",
+    "gradeRank": 2,
+    "source": "站立12小时",
+    "iconName": "bibozhu",
+    "description": "深海灵鱼口中的宝珠，碧绿莹润，能调和体内气血。",
+    "weight": 22
+  }
+]

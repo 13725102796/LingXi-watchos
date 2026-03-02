@@ -1,0 +1,98 @@
+[
+  {
+    "id": "misty_mountains",
+    "name": "云雾仙山",
+    "unlockDays": 0,
+    "imageName": "scenery_misty_mountains",
+    "description": "云雾缭绕的仙山，修仙之旅的起点。",
+    "mood": "serene"
+  },
+  {
+    "id": "bamboo_forest",
+    "name": "翠竹幽林",
+    "unlockDays": 3,
+    "imageName": "scenery_bamboo_forest",
+    "description": "青翠竹林，清风徐来，最宜静心修炼。",
+    "mood": "calm"
+  },
+  {
+    "id": "lotus_lake",
+    "name": "莲花灵湖",
+    "unlockDays": 7,
+    "imageName": "scenery_lotus_lake",
+    "description": "碧波荡漾，莲花盛开，灵气充盈于湖面之上。",
+    "mood": "peaceful"
+  },
+  {
+    "id": "waterfall_gorge",
+    "name": "飞瀑幽谷",
+    "unlockDays": 14,
+    "imageName": "scenery_waterfall_gorge",
+    "description": "瀑布飞泻，水汽成雾，天然灵气聚于此地。",
+    "mood": "energetic"
+  },
+  {
+    "id": "cherry_blossom",
+    "name": "樱花仙境",
+    "unlockDays": 21,
+    "imageName": "scenery_cherry_blossom",
+    "description": "万树樱花竞相绽放，花瓣飘落如仙雪纷飞。",
+    "mood": "joyful"
+  },
+  {
+    "id": "mountain_peak",
+    "name": "云端峰顶",
+    "unlockDays": 30,
+    "imageName": "scenery_mountain_peak",
+    "description": "高居云端，俯瞰苍生，天地之气在此交汇。",
+    "mood": "majestic"
+  },
+  {
+    "id": "ancient_temple",
+    "name": "古刹钟声",
+    "unlockDays": 45,
+    "imageName": "scenery_ancient_temple",
+    "description": "千年古寺，晨钟暮鼓，洗涤尘世浮华。",
+    "mood": "sacred"
+  },
+  {
+    "id": "starry_night",
+    "name": "星河夜渡",
+    "unlockDays": 60,
+    "imageName": "scenery_starry_night",
+    "description": "繁星密布，银河横亘，夜修之时感悟宇宙之道。",
+    "mood": "transcendent"
+  },
+  {
+    "id": "aurora_peaks",
+    "name": "极光仙域",
+    "unlockDays": 90,
+    "imageName": "scenery_aurora_peaks",
+    "description": "极光流转，神秘莫测，传闻此地乃仙人修炼之所。",
+    "mood": "mystical"
+  },
+  {
+    "id": "golden_sea",
+    "name": "金光圣境",
+    "unlockDays": 120,
+    "imageName": "scenery_golden_sea",
+    "description": "金光普照，祥云万里，大道之光照耀修仙之路。",
+    "mood": "divine"
+  },
+  {
+    "id": "void_space",
+    "name": "太虚幻境",
+    "unlockDays": 180,
+    "imageName": "scenery_void_space",
+    "description": "虚空之中，万物归一，感悟天地大道之本源。",
+    "mood": "cosmic"
+  },
+  {
+    "id": "immortal_realm",
+    "name": "仙界彼岸",
+    "unlockDays": 365,
+    "imageName": "scenery_immortal_realm",
+    "description": "超脱轮回，抵达彼岸，此乃修仙者终极归宿。",
+    "mood": "transcended"
+  }
+]

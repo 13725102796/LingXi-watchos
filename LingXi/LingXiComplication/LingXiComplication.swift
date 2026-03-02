@@ -45,9 +45,14 @@ struct LingXiProvider: TimelineProvider {
 
     // MARK: - 从 App Group UserDefaults 加载（带范围校验）
 
+    private static let fallbackEntry = LingXiEntry(
+        date: Date(), realmLevel: 1, realmName: "凡心初悟",
+        cultivation: 0, nextThreshold: 100, lotusState: "calm", complicationLabel: "凡心"
+    )
+
     private func loadEntry() -> LingXiEntry {
         guard let defaults = UserDefaults(suiteName: LingXiKeys.appGroupID) else {
-            return placeholder(in: .init())
+            return LingXiProvider.fallbackEntry
         }
 
         // 范围校验：防止数据注入导致数组越界

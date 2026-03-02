@@ -1,0 +1,74 @@
+[
+  {
+    "level": 1,
+    "name": "凡心初悟",
+    "stage": "凡境",
+    "requiredCultivation": 0,
+    "unlockText": "踏上修仙之路，感悟天地初心。",
+    "complicationLabel": "凡心"
+  },
+  {
+    "level": 2,
+    "name": "清心凝神",
+    "stage": "练气期",
+    "requiredCultivation": 100,
+    "unlockText": "心如止水，灵气初聚，踏入修炼之门。",
+    "complicationLabel": "练气"
+  },
+  {
+    "level": 3,
+    "name": "筑基圆满",
+    "stage": "筑基期",
+    "requiredCultivation": 300,
+    "unlockText": "根基稳固，灵力充盈，修炼渐入佳境。",
+    "complicationLabel": "筑基"
+  },
+  {
+    "level": 4,
+    "name": "结丹初成",
+    "stage": "金丹期",
+    "requiredCultivation": 700,
+    "unlockText": "金丹凝结，脱胎换骨，寿元大增。",
+    "complicationLabel": "金丹"
+  },
+  {
+    "level": 5,
+    "name": "元婴显化",
+    "stage": "元婴期",
+    "requiredCultivation": 1500,
+    "unlockText": "元婴出窍，神游物外，可感天地之息。",
+    "complicationLabel": "元婴"
+  },
+  {
+    "level": 6,
+    "name": "化神归一",
+    "stage": "化神期",
+    "requiredCultivation": 3000,
+    "unlockText": "神念化形，与天地同频，踏入大修士之列。",
+    "complicationLabel": "化神"
+  },
+  {
+    "level": 7,
+    "name": "炼虚合道",
+    "stage": "炼虚期",
+    "requiredCultivation": 6000,
+    "unlockText": "虚实相融，合乎大道，仙途在望。",
+    "complicationLabel": "炼虚"
+  },
+  {
+    "level": 8,
+    "name": "合体大成",
+    "stage": "合体期",
+    "requiredCultivation": 12000,
+    "unlockText": "肉身合道，天人合一，超凡入圣。",
+    "complicationLabel": "合体"
+  },
+  {
+    "level": 9,
+    "name": "大乘飞升",
+    "stage": "大乘期",
+    "requiredCultivation": 25000,
+    "unlockText": "道法圆满，羽化飞升，位列仙班！",
+    "complicationLabel": "大乘"
+  }
+]
