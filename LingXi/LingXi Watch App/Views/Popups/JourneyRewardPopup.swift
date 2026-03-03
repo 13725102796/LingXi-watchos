@@ -1,6 +1,10 @@
 import SwiftUI
+import SwiftData
+import WidgetKit
 
 struct JourneyRewardPopup: View {
+
+    @Environment(\.modelContext) private var modelContext
 
     let data: JourneyRewardData
     let onDismiss: () -> Void
@@ -84,6 +88,7 @@ struct JourneyRewardPopup: View {
                         .italic()
 
                     Button("领取") {
+                        saveCollectedItems()
                         withAnimation(LingXiAnimations.standard) { onDismiss() }
                     }
                     .font(LingXiFonts.cardTitle)
@@ -114,6 +119,33 @@ struct JourneyRewardPopup: View {
         case .basic:     return "基础历练"
         case .none:      return ""
         }
+    }
+
+    private func saveCollectedItems() {
+        for itemId in data.newItemIds {
+            let collected = CollectedItem(itemId: itemId, obtainSource: "历练·\(journeyLevelText)")
+            modelContext.insert(collected)
+        }
+        try? modelContext.save()
+        syncCollectedItemsToWidget()
+    }
+
+    private func syncCollectedItemsToWidget() {
+        let descriptor = FetchDescriptor<CollectedItem>()
+        guard let allItems = try? modelContext.fetch(descriptor) else { return }
+        var seen = Set<String>()
+        let dtos: [SpiritItemDTO] = allItems.compactMap { collected in
+            guard seen.insert(collected.itemId).inserted,
+                  let def = StaticDataLoader.shared.item(id: collected.itemId) else { return nil }
+            return SpiritItemDTO(
+                id: def.id, name: def.name, grade: def.grade,
+                gradeRank: def.gradeRank,
+                sfSymbol: SpiritItemSymbolMap.sfSymbol(for: def.id),
+                obtainedDate: collected.obtainedDate
+            )
+        }
+        LingXiKeys.syncCollectedItems(dtos)
+        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
     }
 
     private func rewardBadge(value: String, label: String, color: Color) -> some View {

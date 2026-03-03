@@ -75,6 +75,11 @@
 			path = LingXiComplication;
 			sourceTree = "<group>";
 		};
+		D68C60F02F5540000014652B /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +108,7 @@
 				D68C60E62F5534780014652B /* LingXiComplicationExtension.entitlements */,
 				D68C60722F5530910014652B /* LingXi Watch App */,
 				D68C608C2F5530DD0014652B /* LingXiComplication */,
+				D68C60F02F5540000014652B /* Shared */,
 				D68C60872F5530DD0014652B /* Frameworks */,
 				D68C60692F5530910014652B /* Products */,
 			);
@@ -165,6 +171,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				D68C60722F5530910014652B /* LingXi Watch App */,
+				D68C60F02F5540000014652B /* Shared */,
 			);
 			name = "LingXi Watch App";
 			packageProductDependencies = (
@@ -187,6 +194,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				D68C608C2F5530DD0014652B /* LingXiComplication */,
+				D68C60F02F5540000014652B /* Shared */,
 			);
 			name = LingXiComplicationExtension;
 			packageProductDependencies = (
@@ -429,7 +437,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi.watch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp.watch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -440,7 +448,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -464,7 +472,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi.watch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp.watch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -476,7 +484,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -488,7 +496,7 @@
 				DEVELOPMENT_TEAM = 38N8NNWWY7;
 				INFOPLIST_KEY_CFBundleDisplayName = LingXi;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -505,7 +513,7 @@
 				DEVELOPMENT_TEAM = 38N8NNWWY7;
 				INFOPLIST_KEY_CFBundleDisplayName = LingXi;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -534,7 +542,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi.watch.complication;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp.watch.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -545,7 +553,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -568,7 +576,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxi.watch.complication;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangyechang.lingxiapp.watch.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -579,7 +587,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};

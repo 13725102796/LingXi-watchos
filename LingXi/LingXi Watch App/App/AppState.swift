@@ -1,9 +1,13 @@
 import SwiftUI
 import Observation
+import WidgetKit
 
 // MARK: - 运行时全局状态（@Observable，由 LingXiApp 注入 Environment）
 
 @Observable final class AppState {
+
+    // MARK: - Onboarding 状态
+    var hasOnboarded: Bool = LingXiKeys.hasOnboarded
 
     // MARK: - 实时健康状态
 
@@ -51,6 +55,8 @@ import Observation
         LingXiKeys.realmName   = profile.realmName
         LingXiKeys.cultivation = profile.cultivation
         LingXiKeys.nextThreshold = nextThreshold
+
+        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
     }
 }
 

@@ -1,8 +1,11 @@
 import SwiftUI
+import SwiftData
+import WidgetKit
 
 struct OnboardingView: View {
 
     @Environment(AppState.self) private var appState
+    @Environment(\.modelContext) private var modelContext
     @State private var currentPage = 0
     @State private var isRequestingAuth = false
     @State private var authError: String?
@@ -152,10 +155,32 @@ struct OnboardingView: View {
 
     private func completeOnboarding() {
         LingXiKeys.hasOnboarded = true
+        appState.hasOnboarded = true
         // 初始化默认 UserDefaults 供 Widget 读取
         LingXiKeys.realmLevel = 1
         LingXiKeys.realmName = "凡心初悟"
         LingXiKeys.cultivation = 0
         LingXiKeys.nextThreshold = 100
+
+        // 赠送 3 个初始灵物
+        let starterItems = ["qingquan", "songfeng", "chenlu"]  // 清泉、松风、晨露
+        for itemId in starterItems {
+            let collected = CollectedItem(itemId: itemId, obtainSource: "踏入仙途")
+            modelContext.insert(collected)
+        }
+        try? modelContext.save()
+
+        // 同步到 UserDefaults 供 Widget 选择
+        let dtos: [SpiritItemDTO] = starterItems.compactMap { itemId in
+            guard let def = StaticDataLoader.shared.item(id: itemId) else { return nil }
+            return SpiritItemDTO(
+                id: def.id, name: def.name, grade: def.grade,
+                gradeRank: def.gradeRank,
+                sfSymbol: SpiritItemSymbolMap.sfSymbol(for: def.id),
+                obtainedDate: Date()
+            )
+        }
+        LingXiKeys.syncCollectedItems(dtos)
+        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
     }
 }

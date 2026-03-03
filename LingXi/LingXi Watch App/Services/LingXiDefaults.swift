@@ -15,6 +15,12 @@ enum LingXiKeys {
     static let currentCultivation  = "lx_cultivation"      // Int
     static let nextRealmThreshold  = "lx_next_threshold"   // Int
     static let lotusState          = "lx_lotus_state"      // String
+    static let heartRateKey        = "lx_heart_rate"       // Int
+
+    // MARK: - Widget 灵物配置 Key
+
+    static let collectedItemsKey          = "lx_collected_items"          // Data: JSON [SpiritItemDTO]
+    static let selectedComplicationItemKey = "lx_selected_complication_item" // String: item id
 
     // MARK: - 防抖与去重 Key
 
@@ -102,6 +108,32 @@ extension LingXiKeys {
     static var journeyDays: Int {
         get { max(0, shared.integer(forKey: totalJourneyDays)) }
         set { shared.set(max(0, newValue), forKey: totalJourneyDays) }
+    }
+
+    // MARK: 心率
+
+    static var heartRate: Int {
+        get { shared.integer(forKey: heartRateKey) }
+        set { shared.set(newValue, forKey: heartRateKey) }
+    }
+
+    // MARK: 灵物同步（App ↔ Widget）
+
+    static func syncCollectedItems(_ items: [SpiritItemDTO]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        shared.set(data, forKey: collectedItemsKey)
+    }
+
+    static func loadCollectedItems() -> [SpiritItemDTO] {
+        guard let data = shared.data(forKey: collectedItemsKey),
+              let items = try? JSONDecoder().decode([SpiritItemDTO].self, from: data)
+        else { return [] }
+        return items
+    }
+
+    static var selectedComplicationItemId: String? {
+        get { shared.string(forKey: selectedComplicationItemKey) }
+        set { shared.set(newValue, forKey: selectedComplicationItemKey) }
     }
 }
 

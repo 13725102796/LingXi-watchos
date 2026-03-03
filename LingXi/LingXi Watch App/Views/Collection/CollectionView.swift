@@ -114,17 +114,11 @@ struct SpiritItemDetailSheet: View {
             LingXiColors.background.ignoresSafeArea()
             ScrollView {
                 VStack(spacing: 8) {
-                    Group {
-                        if let uiImage = UIImage(named: item.iconName) {
-                            Image(uiImage: uiImage).resizable().scaledToFit()
-                        } else {
-                            Image(systemName: "star.fill")
-                                .font(.system(size: 40))
-                                .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
-                        }
-                    }
-                    .frame(width: 60, height: 60)
-                    .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.8), radius: 8)
+                    Image(systemName: SpiritItemSymbolMap.sfSymbol(for: item.id))
+                        .font(.system(size: 40))
+                        .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
+                        .frame(width: 60, height: 60)
+                        .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.8), radius: 8)
 
                     Text(item.name)
                         .realmTitleStyle()

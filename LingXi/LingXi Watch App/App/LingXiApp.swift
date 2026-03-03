@@ -28,7 +28,7 @@ struct ContentRootView: View {
     @Query private var profiles: [CultivationProfile]
 
     var body: some View {
-        if LingXiKeys.hasOnboarded {
+        if appState.hasOnboarded {
             MainTabView()
                 .task { await loadProfile() }
                 .task { await checkMorningSettlement() }

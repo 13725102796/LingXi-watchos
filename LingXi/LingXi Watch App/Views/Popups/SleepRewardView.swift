@@ -1,6 +1,10 @@
 import SwiftUI
+import SwiftData
+import WidgetKit
 
 struct SleepRewardView: View {
+
+    @Environment(\.modelContext) private var modelContext
 
     let data: SleepRewardData
     let onDismiss: () -> Void
@@ -71,6 +75,7 @@ struct SleepRewardView: View {
 
                     // 确认按钮
                     Button("领取") {
+                        saveCollectedItems()
                         withAnimation(LingXiAnimations.standard) { onDismiss() }
                     }
                     .font(LingXiFonts.cardTitle)
@@ -87,6 +92,33 @@ struct SleepRewardView: View {
             textVisible = true
             itemsVisible = true
         }
+    }
+
+    private func saveCollectedItems() {
+        for itemId in data.newItemIds {
+            let collected = CollectedItem(itemId: itemId, obtainSource: "闭关·\(data.grade.rawValue)")
+            modelContext.insert(collected)
+        }
+        try? modelContext.save()
+        syncCollectedItemsToWidget()
+    }
+
+    private func syncCollectedItemsToWidget() {
+        let descriptor = FetchDescriptor<CollectedItem>()
+        guard let allItems = try? modelContext.fetch(descriptor) else { return }
+        var seen = Set<String>()
+        let dtos: [SpiritItemDTO] = allItems.compactMap { collected in
+            guard seen.insert(collected.itemId).inserted,
+                  let def = StaticDataLoader.shared.item(id: collected.itemId) else { return nil }
+            return SpiritItemDTO(
+                id: def.id, name: def.name, grade: def.grade,
+                gradeRank: def.gradeRank,
+                sfSymbol: SpiritItemSymbolMap.sfSymbol(for: def.id),
+                obtainedDate: collected.obtainedDate
+            )
+        }
+        LingXiKeys.syncCollectedItems(dtos)
+        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
     }
 
     private func rewardBadge(icon: String, value: String, label: String, color: Color) -> some View {

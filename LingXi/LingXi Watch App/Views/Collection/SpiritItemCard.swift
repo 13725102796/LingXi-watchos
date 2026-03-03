@@ -38,20 +38,12 @@ struct SpiritItemCard: View {
 
     private var unlockedContent: some View {
         VStack(spacing: 2) {
-            // 灵物图片（对应原型 28×28px 图片）
-            Group {
-                if let uiImage = UIImage(named: item.iconName) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
-                        .font(.system(size: 22))
-                }
-            }
-            .frame(width: 28, height: 28)
-            .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.5), radius: 3)
+            // 灵物图标（SF Symbol 映射）
+            Image(systemName: SpiritItemSymbolMap.sfSymbol(for: item.id))
+                .foregroundStyle(LingXiColors.gradeColor(for: item.gradeRank))
+                .font(.system(size: 22))
+                .frame(width: 28, height: 28)
+                .shadow(color: LingXiColors.gradeColor(for: item.gradeRank).opacity(0.5), radius: 3)
 
             // 短名称（对应原型 font-size:10px）
             Text(item.name)
