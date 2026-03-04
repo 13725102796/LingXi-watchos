@@ -181,6 +181,6 @@ struct OnboardingView: View {
             )
         }
         LingXiKeys.syncCollectedItems(dtos)
-        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

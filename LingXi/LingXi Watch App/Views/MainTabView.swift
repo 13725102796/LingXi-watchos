@@ -27,6 +27,11 @@ struct MainTabView: View {
             // MARK: 弹窗覆盖层
             popupOverlay
         }
+        .onChange(of: appState.deepLinkTab) { _, newTab in
+            guard let tab = newTab else { return }
+            withAnimation { selectedTab = tab }
+            appState.deepLinkTab = nil   // 消费完毕
+        }
     }
 
     @ViewBuilder

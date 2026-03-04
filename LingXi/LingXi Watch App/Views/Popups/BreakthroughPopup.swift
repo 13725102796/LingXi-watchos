@@ -79,7 +79,7 @@ struct BreakthroughPopup: View {
         .onAppear {
             WKInterfaceDevice.current().play(.success)
             // 刷新表盘组件
-            WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
+            WidgetCenter.shared.reloadAllTimelines()
             withAnimation { particleVisible = true }
             withAnimation(LingXiAnimations.popIn.delay(0.1)) { textVisible = true }
             withAnimation(LingXiAnimations.popIn.delay(0.2)) { realmScale = 1.0 }

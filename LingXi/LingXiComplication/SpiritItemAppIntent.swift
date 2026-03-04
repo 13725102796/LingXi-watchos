@@ -80,7 +80,7 @@ struct SpiritItemEntityQuery: EntityStringQuery {
     }
 
     func defaultResult() async -> SpiritItemEntity? {
-        .defaultLotus
+        nil  // 返回 nil，让每个 Widget 的 Provider 自行决定默认灵物
     }
 
     private static var allWithDefault: [SpiritItemEntity] {

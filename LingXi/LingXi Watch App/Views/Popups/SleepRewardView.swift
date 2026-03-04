@@ -118,7 +118,7 @@ struct SleepRewardView: View {
             )
         }
         LingXiKeys.syncCollectedItems(dtos)
-        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func rewardBadge(icon: String, value: String, label: String, color: Color) -> some View {

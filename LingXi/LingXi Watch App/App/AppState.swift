@@ -9,6 +9,10 @@ import WidgetKit
     // MARK: - Onboarding 状态
     var hasOnboarded: Bool = LingXiKeys.hasOnboarded
 
+    // MARK: - 深链接导航（表盘组件点击跳转）
+    var deepLinkTab: Int?                // 目标 Tab（0=首页, 1=历练, 2=灵物）
+    var deepLinkItemId: String?          // 跳转到指定灵物详情
+
     // MARK: - 实时健康状态
 
     var currentHR: Double = 0
@@ -56,7 +60,7 @@ import WidgetKit
         LingXiKeys.cultivation = profile.cultivation
         LingXiKeys.nextThreshold = nextThreshold
 
-        WidgetCenter.shared.reloadTimelines(ofKind: "LingXiComplication")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

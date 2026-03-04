@@ -3,6 +3,7 @@ import SwiftData
 
 struct CollectionView: View {
 
+    @Environment(AppState.self) private var appState
     @Query private var collectedItems: [CollectedItem]
     @State private var selectedItem: SpiritItemDef?
 
@@ -46,6 +47,11 @@ struct CollectionView: View {
         }
         .sheet(item: $selectedItem) { item in
             SpiritItemDetailSheet(item: item, obtainedDate: obtainedDate(for: item.id))
+        }
+        .onChange(of: appState.deepLinkItemId) { _, itemId in
+            guard let itemId, let item = allItems.first(where: { $0.id == itemId }) else { return }
+            selectedItem = item
+            appState.deepLinkItemId = nil
         }
     }
 

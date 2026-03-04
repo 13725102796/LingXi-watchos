@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.zhangyechang.lingxiapp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lingxi</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSHealthShareUsageDescription</key>
 	<string>灵息需要读取心率、HRV、睡眠、运动等健康数据，用于修仙养成系统。所有数据仅存于本机。</string>
 	<key>UIBackgroundModes</key>

@@ -32,8 +32,33 @@ struct ContentRootView: View {
             MainTabView()
                 .task { await loadProfile() }
                 .task { await checkMorningSettlement() }
+                .onOpenURL { url in handleDeepLink(url) }
         } else {
             OnboardingView()
+        }
+    }
+
+    // MARK: - 深链接路由（表盘组件点击）
+    // lingxi://tab/0  → 首页
+    // lingxi://tab/1  → 历练
+    // lingxi://tab/2  → 灵物图鉴
+    // lingxi://item/tianshan_xuelian → 灵物详情
+
+    private func handleDeepLink(_ url: URL) {
+        guard url.scheme == "lingxi" else { return }
+
+        switch url.host {
+        case "tab":
+            if let tabStr = url.pathComponents.last, let tab = Int(tabStr) {
+                appState.deepLinkTab = tab
+            }
+        case "item":
+            if let itemId = url.pathComponents.last {
+                appState.deepLinkTab = 2           // 先跳到灵物图鉴
+                appState.deepLinkItemId = itemId   // 再打开详情
+            }
+        default:
+            break
         }
     }
 

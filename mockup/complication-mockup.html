@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灵息 · 表盘组件 Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #0D0D0F;
+    --surface: #1A1A1E;
+    --text-primary: #F0EDE8;
+    --text-secondary: #8A9B9B;
+    --grade-1: #6B8CAE; /* 下品 */
+    --grade-2: #4ECDC4; /* 中品 */
+    --grade-3: #9B6FE8; /* 上品 */
+    --grade-4: #C8A96E; /* 仙品 */
+    --grade-5: #FF6B6B; /* 神品 */
+    --progress-bg: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Noto Serif SC', serif;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 300;
+    letter-spacing: 6px;
+    margin-bottom: 12px;
+    font-size: 24px;
+    color: var(--text-primary);
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 300;
+  }
+
+  /* === Circular 圆形组件 === */
+  .circular-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .circular-item {
+    text-align: center;
+  }
+  .circular-item .label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .circular {
+    width: 72px;
+    height: 72px;
+    position: relative;
+  }
+
+  .circular svg {
+    width: 72px;
+    height: 72px;
+    transform: rotate(-90deg);
+  }
+
+  .circular .track {
+    fill: none;
+    stroke: var(--progress-bg);
+    stroke-width: 5;
+  }
+
+  .circular .progress {
+    fill: none;
+    stroke-width: 5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 4px var(--glow));
+  }
+
+  .circular .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+
+  .circular .icon {
+    font-size: 22px;
+    filter: drop-shadow(0 0 6px var(--glow));
+  }
+
+  .circular .name {
+    font-size: 8px;
+    color: rgba(240,237,232,0.7);
+    letter-spacing: 1px;
+  }
+
+  /* === Rectangular 矩形组件 === */
+  .rectangular-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .rect-item {
+    text-align: center;
+  }
+  .rect-item .label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .rectangular {
+    width: 172px;
+    height: 56px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .rect-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rect-top .icon {
+    font-size: 15px;
+  }
+
+  .rect-top .realm-text {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: var(--text-primary);
+  }
+
+  .rect-bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    height: 5px;
+    background: var(--progress-bg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .rect-bottom .percent {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* === Corner 角落组件 === */
+  .corner-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .corner-item {
+    text-align: center;
+  }
+  .corner-item .label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .corner {
+    width: 48px;
+    height: 48px;
+    position: relative;
+  }
+
+  .corner svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .corner .center {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+  }
+
+  /* === Inline 内联组件 === */
+  .inline-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .inline-item .label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .inline-comp {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+  }
+
+  .inline-comp .icon {
+    font-size: 11px;
+  }
+
+  /* === 品级色板 === */
+  .palette {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    text-align: center;
+  }
+  .swatch .circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin: 0 auto 6px;
+    box-shadow: 0 0 12px var(--c);
+  }
+  .swatch .name {
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<h1>灵 息</h1>
+<p class="subtitle">watchOS 表盘组件 · 设计稿</p>
+
+<!-- Circular -->
+<p class="section-title">- Circular 圆形 -</p>
+<div class="circular-row">
+
+  <!-- 清泉 下品 -->
+  <div class="circular-item">
+    <div class="circular" style="--glow: var(--grade-1)">
+      <svg viewBox="0 0 72 72">
+        <circle class="track" cx="36" cy="36" r="30"/>
+        <circle class="progress" cx="36" cy="36" r="30"
+          stroke="url(#grad1)" stroke-dasharray="188.5" stroke-dashoffset="52"/>
+      </svg>
+      <div class="center">
+        <span class="icon" style="color: var(--grade-1)">💧</span>
+        <span class="name">清泉</span>
+      </div>
+    </div>
+    <div class="label">下品 · 72%</div>
+  </div>
+
+  <!-- 凤凰羽 仙品 -->
+  <div class="circular-item">
+    <div class="circular" style="--glow: var(--grade-4)">
+      <svg viewBox="0 0 72 72">
+        <circle class="track" cx="36" cy="36" r="30"/>
+        <circle class="progress" cx="36" cy="36" r="30"
+          stroke="url(#grad4)" stroke-dasharray="188.5" stroke-dashoffset="75"/>
+      </svg>
+      <div class="center">
+        <span class="icon" style="color: var(--grade-4)">🔥</span>
+        <span class="name">凤凰羽</span>
+      </div>
+    </div>
+    <div class="label">仙品 · 60%</div>
+  </div>
+
+  <!-- 夜华 上品 -->
+  <div class="circular-item">
+    <div class="circular" style="--glow: var(--grade-3)">
+      <svg viewBox="0 0 72 72">
+        <circle class="track" cx="36" cy="36" r="30"/>
+        <circle class="progress" cx="36" cy="36" r="30"
+          stroke="url(#grad3)" stroke-dasharray="188.5" stroke-dashoffset="94"/>
+      </svg>
+      <div class="center">
+        <span class="icon" style="color: var(--grade-3)">🌙</span>
+        <span class="name">夜华</span>
+      </div>
+    </div>
+    <div class="label">上品 · 50%</div>
+  </div>
+
+  <!-- 天山雪莲 仙品 -->
+  <div class="circular-item">
+    <div class="circular" style="--glow: var(--grade-4)">
+      <svg viewBox="0 0 72 72">
+        <circle class="track" cx="36" cy="36" r="30"/>
+        <circle class="progress" cx="36" cy="36" r="30"
+          stroke="url(#grad4b)" stroke-dasharray="188.5" stroke-dashoffset="37"/>
+      </svg>
+      <div class="center">
+        <span class="icon" style="color: var(--grade-4)">❄️</span>
+        <span class="name">雪莲</span>
+      </div>
+    </div>
+    <div class="label">仙品 · 80%</div>
+  </div>
+</div>
+
+<!-- Rectangular -->
+<p class="section-title">- Rectangular 矩形 -</p>
+<div class="rectangular-row">
+
+  <div class="rect-item">
+    <div class="rectangular">
+      <div class="rect-top">
+        <span class="icon" style="color: var(--grade-1)">💧</span>
+        <span class="realm-text">清心境 · 凝神</span>
+      </div>
+      <div class="rect-bottom">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:72%; background: linear-gradient(90deg, rgba(107,140,174,0.4), #6B8CAE)"></div>
+        </div>
+        <span class="percent">灵气 72%</span>
+      </div>
+    </div>
+    <div class="label">清泉 · 下品</div>
+  </div>
+
+  <div class="rect-item">
+    <div class="rectangular">
+      <div class="rect-top">
+        <span class="icon" style="color: var(--grade-4)">🔥</span>
+        <span class="realm-text">清心境 · 凝神</span>
+      </div>
+      <div class="rect-bottom">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:60%; background: linear-gradient(90deg, rgba(200,169,110,0.4), #C8A96E)"></div>
+        </div>
+        <span class="percent">灵气 60%</span>
+      </div>
+    </div>
+    <div class="label">凤凰羽 · 仙品</div>
+  </div>
+
+  <div class="rect-item">
+    <div class="rectangular">
+      <div class="rect-top">
+        <span class="icon" style="color: var(--grade-3)">🌙</span>
+        <span class="realm-text">清心境 · 凝神</span>
+      </div>
+      <div class="rect-bottom">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:50%; background: linear-gradient(90deg, rgba(155,111,232,0.4), #9B6FE8)"></div>
+        </div>
+        <span class="percent">灵气 50%</span>
+      </div>
+    </div>
+    <div class="label">夜华 · 上品</div>
+  </div>
+
+  <div class="rect-item">
+    <div class="rectangular">
+      <div class="rect-top">
+        <span class="icon" style="color: var(--grade-4)">❄️</span>
+        <span class="realm-text">清心境 · 凝神</span>
+      </div>
+      <div class="rect-bottom">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:80%; background: linear-gradient(90deg, rgba(200,169,110,0.4), #C8A96E)"></div>
+        </div>
+        <span class="percent">灵气 80%</span>
+      </div>
+    </div>
+    <div class="label">天山雪莲 · 仙品</div>
+  </div>
+</div>
+
+<!-- Corner -->
+<p class="section-title">- Corner 角落 -</p>
+<div class="corner-row">
+  <div class="corner-item">
+    <div class="corner">
+      <svg viewBox="0 0 48 48">
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="url(#cgrad1)" stroke-width="4" stroke-linecap="round"
+          stroke-dasharray="56.5" stroke-dashoffset="15.8"/>
+      </svg>
+      <div class="center" style="color: var(--grade-1)">💧</div>
+    </div>
+    <div class="label">清泉</div>
+  </div>
+
+  <div class="corner-item">
+    <div class="corner">
+      <svg viewBox="0 0 48 48">
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="url(#cgrad4)" stroke-width="4" stroke-linecap="round"
+          stroke-dasharray="56.5" stroke-dashoffset="22.6"/>
+      </svg>
+      <div class="center" style="color: var(--grade-4)">🔥</div>
+    </div>
+    <div class="label">凤凰羽</div>
+  </div>
+
+  <div class="corner-item">
+    <div class="corner">
+      <svg viewBox="0 0 48 48">
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="url(#cgrad3)" stroke-width="4" stroke-linecap="round"
+          stroke-dasharray="56.5" stroke-dashoffset="28.2"/>
+      </svg>
+      <div class="center" style="color: var(--grade-3)">🌙</div>
+    </div>
+    <div class="label">夜华</div>
+  </div>
+
+  <div class="corner-item">
+    <div class="corner">
+      <svg viewBox="0 0 48 48">
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M6 42 A30 30 0 0 1 42 42" fill="none" stroke="url(#cgrad4b)" stroke-width="4" stroke-linecap="round"
+          stroke-dasharray="56.5" stroke-dashoffset="11.3"/>
+      </svg>
+      <div class="center" style="color: var(--grade-4)">❄️</div>
+    </div>
+    <div class="label">天山雪莲</div>
+  </div>
+</div>
+
+<!-- Inline -->
+<p class="section-title">- Inline 内联 -</p>
+<div class="inline-row">
+  <div class="inline-item">
+    <div class="label">清泉</div>
+    <div class="inline-comp">
+      <span class="icon" style="color: var(--grade-1)">💧</span>
+      <span>清心境 · 清泉</span>
+    </div>
+  </div>
+  <div class="inline-item">
+    <div class="label">凤凰羽</div>
+    <div class="inline-comp">
+      <span class="icon" style="color: var(--grade-4)">🔥</span>
+      <span>清心境 · 凤凰羽</span>
+    </div>
+  </div>
+  <div class="inline-item">
+    <div class="label">夜华</div>
+    <div class="inline-comp">
+      <span class="icon" style="color: var(--grade-3)">🌙</span>
+      <span>清心境 · 夜华</span>
+    </div>
+  </div>
+  <div class="inline-item">
+    <div class="label">天山雪莲</div>
+    <div class="inline-comp">
+      <span class="icon" style="color: var(--grade-4)">❄️</span>
+      <span>清心境 · 天山雪莲</span>
+    </div>
+  </div>
+</div>
+
+<!-- 品级色板 -->
+<p class="section-title">- 品级色系 -</p>
+<div class="palette">
+  <div class="swatch"><div class="circle" style="background: var(--grade-1); --c: var(--grade-1)"></div><div class="name">下品</div></div>
+  <div class="swatch"><div class="circle" style="background: var(--grade-2); --c: var(--grade-2)"></div><div class="name">中品</div></div>
+  <div class="swatch"><div class="circle" style="background: var(--grade-3); --c: var(--grade-3)"></div><div class="name">上品</div></div>
+  <div class="swatch"><div class="circle" style="background: var(--grade-4); --c: var(--grade-4)"></div><div class="name">仙品</div></div>
+  <div class="swatch"><div class="circle" style="background: var(--grade-5); --c: var(--grade-5)"></div><div class="name">神品</div></div>
+</div>
+
+<!-- SVG Gradients -->
+<svg width="0" height="0">
+  <defs>
+    <!-- Circular gradients -->
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(107,140,174,0.3)"/>
+      <stop offset="100%" style="stop-color:#6B8CAE"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(155,111,232,0.3)"/>
+      <stop offset="100%" style="stop-color:#9B6FE8"/>
+    </linearGradient>
+    <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(200,169,110,0.3)"/>
+      <stop offset="100%" style="stop-color:#C8A96E"/>
+    </linearGradient>
+    <linearGradient id="grad4b" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(200,169,110,0.3)"/>
+      <stop offset="100%" style="stop-color:#C8A96E"/>
+    </linearGradient>
+    <!-- Corner gradients -->
+    <linearGradient id="cgrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(107,140,174,0.3)"/>
+      <stop offset="100%" style="stop-color:#6B8CAE"/>
+    </linearGradient>
+    <linearGradient id="cgrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(155,111,232,0.3)"/>
+      <stop offset="100%" style="stop-color:#9B6FE8"/>
+    </linearGradient>
+    <linearGradient id="cgrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(200,169,110,0.3)"/>
+      <stop offset="100%" style="stop-color:#C8A96E"/>
+    </linearGradient>
+    <linearGradient id="cgrad4b" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(200,169,110,0.3)"/>
+      <stop offset="100%" style="stop-color:#C8A96E"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+</body>
+</html>
