@@ -40,6 +40,17 @@ enum LingXiAnimations {
 
     /// 粒子扩散动画
     static let particleSpread = Animation.easeOut(duration: 0.8)
+
+    // MARK: - 云游历练页动画
+
+    /// 玉净瓶水波
+    static let waterWave = Animation.easeInOut(duration: 2.4).repeatForever(autoreverses: true)
+    /// 仙露填充
+    static let dewFill = Animation.easeOut(duration: 1.2)
+    /// 星辰闪烁
+    static let starTwinkle = Animation.easeInOut(duration: 1.8).repeatForever(autoreverses: true)
+    /// 星辰点亮
+    static let starLight = Animation.easeOut(duration: 0.5)
 }
 
 // MARK: - 莲花状态枚举

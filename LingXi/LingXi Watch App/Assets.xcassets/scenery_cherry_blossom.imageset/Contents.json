@@ -1,0 +1,6 @@
+{
+  "images" : [
+    { "idiom" : "universal", "scale" : "2x", "filename" : "scenery_cherry_blossom@2x.png" }
+  ],
+  "info" : { "version" : 1, "author" : "xcode" }
+}

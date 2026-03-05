@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灵息 · 云游历练 v4 — 沉浸式全屏</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0A0A0F;
+    --gold: #C8A96E;
+    --gold-dim: #7A6340;
+    --teal: #4ECDC4;
+    --teal-dim: #2A7A76;
+    --moon-white: #E0F7FA;
+    --text-primary: #F0EDE4;
+    --text-secondary: #8A8A9A;
+    --text-disabled: #3A3A4A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08080D;
+    font-family: 'Noto Serif SC', serif;
+    display: flex; flex-direction: column;
+    align-items: center; padding: 40px 20px 80px;
+    min-height: 100vh; gap: 32px;
+  }
+  h1 { color: var(--text-primary); font-weight: 200; letter-spacing: 8px; font-size: 20px; }
+  .page-subtitle { color: var(--text-secondary); font-size: 11px; letter-spacing: 3px; font-weight: 300; }
+
+  /* Watch Frame */
+  .watch-frame {
+    width: 198px; height: 242px; border-radius: 42px;
+    background: var(--bg); overflow: hidden; position: relative;
+    box-shadow: 0 0 0 2px #222230, 0 0 0 4px #15151E, 0 20px 60px rgba(0,0,0,0.7);
+  }
+
+  /* 全屏分页 */
+  .watch-pager {
+    width: 100%; height: 100%;
+    overflow-y: auto; scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+  }
+  .watch-pager::-webkit-scrollbar { display: none; }
+
+  .watch-page {
+    width: 100%; height: 100%;
+    scroll-snap-align: start;
+    position: relative; overflow: hidden;
+  }
+
+  /* 右侧分页点 */
+  .page-dots {
+    position: absolute; right: 6px; top: 50%;
+    transform: translateY(-50%); z-index: 20;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+  .dot.active { background: rgba(255,255,255,0.7); height: 10px; border-radius: 2px; }
+
+  /* ================================================ */
+  /*  全屏沉浸式背景层                                  */
+  /* ================================================ */
+  .immersive-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: #000;
+  }
+  .immersive-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    mix-blend-mode: screen;
+  }
+
+  /* 上下渐变遮罩 — 让文字可读 */
+  .gradient-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 70px; z-index: 1;
+    background: linear-gradient(180deg, rgba(10,10,15,0.85) 0%, rgba(10,10,15,0.4) 50%, transparent 100%);
+  }
+  .gradient-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 90px; z-index: 1;
+    background: linear-gradient(0deg, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.5) 50%, transparent 100%);
+  }
+
+  /* 内容层 */
+  .page-content {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 18px 14px 14px;
+  }
+
+  /* ================================================ */
+  /*  PAGE 1: 聚灵·玉净瓶 — 沉浸式                     */
+  /* ================================================ */
+
+  /* 顶部标题区 */
+  .top-label {
+    text-align: center; margin-bottom: auto;
+  }
+  .top-label .cat-tag {
+    font-size: 7px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text-secondary); font-weight: 300;
+  }
+  .top-label .main-title {
+    font-size: 15px; font-weight: 400; letter-spacing: 5px;
+    margin-top: 2px;
+  }
+
+  /* 中央聚焦区 */
+  .center-focus {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex: 1;
+  }
+
+  /* 玉净瓶（满溢态）— 直接展示 */
+  .vase-img-hero {
+    position: relative;
+    width: 90px; height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    animation: vFloat 3.5s ease-in-out infinite;
+  }
+  @keyframes vFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .vase-aura {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, rgba(200,169,110,0.04) 40%, transparent 70%);
+    animation: auraPulse 3s ease-in-out infinite;
+  }
+  @keyframes auraPulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(0.9); }
+    50% { opacity: 1; transform: translate(-50%,-50%) scale(1.15); }
+  }
+  .vase-img-hero .vase-pic {
+    position: relative; z-index: 1;
+    width: 70px; height: 90px;
+    border-radius: 8px;
+    background: #000; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vase-img-hero .vase-pic img {
+    width: 70px; height: 90px; object-fit: contain;
+    mix-blend-mode: screen;
+  }
+
+  /* ---- 聚灵粒子凝聚效果（未达标） ---- */
+  .converge-wrap {
+    position: relative;
+    width: 130px; height: 130px;
+    overflow: visible;
+  }
+  /* 中心露珠 — 大而明亮 */
+  .dew-core {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 22px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,0.9) 0%, rgba(200,169,110,0.3) 40%, transparent 70%);
+    box-shadow: 0 0 16px rgba(200,169,110,0.5), 0 0 40px rgba(200,169,110,0.2);
+    animation: dewBreath 2.5s ease-in-out infinite;
+    z-index: 2;
+  }
+  @keyframes dewBreath {
+    0%, 100% { transform: translate(-50%,-50%) scale(0.85); box-shadow: 0 0 12px rgba(200,169,110,0.4), 0 0 30px rgba(200,169,110,0.15); }
+    50% { transform: translate(-50%,-50%) scale(1.15); box-shadow: 0 0 20px rgba(200,169,110,0.6), 0 0 50px rgba(200,169,110,0.25); }
+  }
+  /* 涟漪环 — 从中心向外扩散 */
+  .dew-ring {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 1px solid rgba(200,169,110,0.12);
+    animation: ringExpand 3s ease-out infinite;
+  }
+  .dew-ring:nth-child(2) { animation-delay: 1s; }
+  .dew-ring:nth-child(3) { animation-delay: 2s; }
+  @keyframes ringExpand {
+    0% { transform: translate(-50%,-50%) scale(0.2); opacity: 0.6; border-color: rgba(200,169,110,0.2); }
+    100% { transform: translate(-50%,-50%) scale(2); opacity: 0; border-color: rgba(200,169,110,0); }
+  }
+  /* 汇聚粒子 — 从外向中心飞入 */
+  .converge-particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1;
+    animation: converge var(--dur, 3s) ease-in var(--delay, 0s) infinite;
+  }
+  @keyframes converge {
+    0% {
+      transform: translate(var(--sx), var(--sy)) scale(1.2);
+      opacity: 0;
+    }
+    10% { opacity: 0.9; }
+    80% { opacity: 0.7; }
+    100% {
+      transform: translate(0, 0) scale(0);
+      opacity: 0;
+    }
+  }
+  /* 粒子拖尾光效 */
+  .converge-particle::after {
+    content: '';
+    position: absolute; inset: -2px; border-radius: 50%;
+    background: inherit; opacity: 0.3; filter: blur(3px);
+  }
+
+  /* 中央文字 badge */
+  .qi-badge {
+    margin-top: 8px;
+    padding: 3px 10px; border-radius: 12px;
+    background: rgba(200,169,110,0.12);
+    border: 1px solid rgba(200,169,110,0.15);
+    font-size: 9px; color: var(--gold); letter-spacing: 1px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .qi-badge .qi-icon { font-size: 8px; opacity: 0.8; }
+
+  /* 底部统计 */
+  .bottom-stats {
+    margin-top: auto;
+    width: 100%;
+  }
+  .progress-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .progress-label { font-size: 8px; color: var(--text-secondary); white-space: nowrap; letter-spacing: 1px; }
+  .progress-bar {
+    flex: 1; height: 2px; border-radius: 1px;
+    background: rgba(255,255,255,0.06); overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 1px;
+    transition: width 1s ease-out;
+  }
+  .progress-pct {
+    font-size: 9px; font-weight: 400;
+    font-variant-numeric: tabular-nums; letter-spacing: 1px;
+  }
+
+  .mini-stats {
+    display: flex; justify-content: space-between;
+    font-size: 8px; color: var(--text-secondary);
+  }
+  .mini-stats .val { font-variant-numeric: tabular-nums; }
+  .mini-stats .highlight { font-weight: 500; }
+
+  /* ================================================ */
+  /*  PAGE 2: 云游·秘境奇遇 — 沉浸式仙境               */
+  /* ================================================ */
+
+  .encounter-center {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex: 1; text-align: center;
+  }
+  .scenery-name {
+    font-size: 18px; font-weight: 400; letter-spacing: 4px;
+    color: var(--text-primary);
+    text-shadow: 0 0 20px rgba(0,0,0,0.8);
+    margin-bottom: 2px;
+  }
+  .scenery-desc {
+    font-size: 9px; font-weight: 300; color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    margin-bottom: 10px;
+  }
+
+  /* 灵物收集 badge */
+  .loot-badge {
+    padding: 4px 12px; border-radius: 14px;
+    background: rgba(78,205,196,0.1);
+    border: 1px solid rgba(78,205,196,0.15);
+    font-size: 9px; color: var(--teal); letter-spacing: 1px;
+    display: flex; align-items: center; gap: 5px;
+    animation: lootGlow 3s ease-in-out infinite;
+  }
+  @keyframes lootGlow {
+    0%, 100% { box-shadow: 0 0 6px rgba(78,205,196,0.1); }
+    50% { box-shadow: 0 0 16px rgba(78,205,196,0.2); }
+  }
+  .loot-icon { font-size: 12px; }
+  .loot-name { font-weight: 400; }
+
+  /* 未达标 — 雾气遮罩 */
+  .fog-veil {
+    position: absolute; inset: 0; z-index: 5;
+    background: radial-gradient(ellipse at 50% 50%, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.75) 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+  }
+  .fog-veil .fog-icon {
+    font-size: 28px; opacity: 0.25;
+    animation: fogFloat 4s ease-in-out infinite;
+  }
+  @keyframes fogFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.2; }
+    50% { transform: translateY(-4px) scale(1.05); opacity: 0.35; }
+  }
+  .fog-veil .fog-text {
+    font-size: 11px; color: var(--text-secondary); letter-spacing: 3px;
+    opacity: 0.6;
+  }
+  .fog-veil .fog-sub {
+    font-size: 8px; color: var(--text-disabled); letter-spacing: 2px;
+  }
+
+  /* 漂浮粒子效果 */
+  .particles {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
+  }
+  .particle {
+    position: absolute; width: 2px; height: 2px;
+    background: rgba(200,169,110,0.3); border-radius: 50%;
+    animation: particleRise linear infinite;
+  }
+  @keyframes particleRise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-200px) translateX(20px); opacity: 0; }
+  }
+
+  /* ================================================ */
+  /*  PAGE 3: 周天·本命星图 — 沉浸式星空               */
+  /* ================================================ */
+
+  .star-center {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex: 1;
+  }
+
+  .star-grid-immersive {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .star-row-i { display: flex; justify-content: center; gap: 2px; }
+  .star-cell {
+    width: 24px; display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+  }
+  .star-orb-wrap {
+    position: relative; width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .star-orb-glow {
+    position: absolute; width: 20px; height: 20px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(224,247,250,0.5) 0%, rgba(224,247,250,0.15) 35%, transparent 65%);
+    opacity: 0; transition: opacity 0.5s;
+  }
+  .star-cell.lit .star-orb-glow {
+    opacity: 1;
+    animation: orbPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes orbPulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+  .star-orb {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--text-disabled); position: relative; z-index: 1;
+    transition: all 0.5s;
+  }
+  .star-cell.lit .star-orb {
+    width: 5px; height: 5px;
+    background: var(--moon-white);
+    box-shadow: 0 0 6px rgba(224,247,250,0.9), 0 0 14px rgba(224,247,250,0.4);
+  }
+  .star-cell .star-label {
+    font-size: 7px; color: var(--text-disabled); font-weight: 300;
+    transition: color 0.5s;
+  }
+  .star-cell.lit .star-label { color: rgba(224,247,250,0.65); }
+
+  /* 星辰连线 canvas 层 */
+  .star-lines-canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 1; opacity: 0.15;
+  }
+
+  /* 周天完成 badge */
+  .zhou-badge {
+    padding: 3px 10px; border-radius: 12px;
+    background: rgba(224,247,250,0.08);
+    border: 1px solid rgba(224,247,250,0.12);
+    font-size: 9px; color: var(--moon-white); letter-spacing: 2px;
+  }
+
+  /* ================================================ */
+  /*  展示布局                                         */
+  /* ================================================ */
+  .row { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .col { text-align: center; }
+  .col-label { font-size: 10px; color: var(--text-secondary); letter-spacing: 3px; margin-bottom: 14px; font-weight: 300; }
+
+  .controls {
+    display: flex; flex-direction: column; gap: 14px; width: 300px; margin-top: 8px;
+    padding: 20px; border-radius: 12px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  }
+  .ctrl-title { color: var(--text-secondary); font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
+  .ctrl { display: flex; flex-direction: column; gap: 4px; }
+  .ctrl-label { color: var(--text-secondary); font-size: 10px; display: flex; justify-content: space-between; }
+  .ctrl-label b { color: var(--text-primary); font-weight: 400; }
+  input[type="range"] { width: 100%; height: 2px; -webkit-appearance: none; background: rgba(255,255,255,0.06); border-radius: 1px; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); cursor: pointer; }
+
+  /* 动画延迟 - 星辰闪烁 */
+  .star-cell:nth-child(1) .star-orb-glow { animation-delay: 0s; }
+  .star-cell:nth-child(2) .star-orb-glow { animation-delay: 0.4s; }
+  .star-cell:nth-child(3) .star-orb-glow { animation-delay: 0.8s; }
+  .star-cell:nth-child(4) .star-orb-glow { animation-delay: 0.2s; }
+  .star-cell:nth-child(5) .star-orb-glow { animation-delay: 0.6s; }
+  .star-cell:nth-child(6) .star-orb-glow { animation-delay: 1.0s; }
+</style>
+</head>
+<body>
+
+<h1>云 游 历 练</h1>
+<p class="page-subtitle">v4 · 沉浸式全屏背景</p>
+
+<!-- SVG Defs (保留渐变供进度条使用) -->
+<svg width="0" height="0">
+  <defs>
+    <linearGradient id="tealGradV4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2A7A76"/>
+      <stop offset="100%" stop-color="#4ECDC4"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="row">
+
+  <!-- ========== 未达标 ========== -->
+  <div class="col">
+    <div class="col-label">未 达 标</div>
+    <div class="watch-frame">
+      <div class="watch-pager" id="pager1">
+
+        <!-- PAGE 1: 聚灵 — 暗色氛围 + 玉净瓶 -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+
+          <!-- 沉浸背景：纯暗色 + 微弱金色氛围 -->
+          <div class="immersive-bg" style="background: radial-gradient(ellipse at 50% 55%, rgba(200,169,110,0.04) 0%, #000 70%);"></div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <!-- 粒子 -->
+          <div class="particles" id="particles1"></div>
+
+          <div class="page-content">
+            <!-- 顶部标题 -->
+            <div class="top-label">
+              <div class="cat-tag">SPIRIT GATHERING</div>
+              <div class="main-title" style="color: var(--gold);">聚 灵</div>
+            </div>
+
+            <!-- 中央: 粒子凝聚效果 -->
+            <div class="center-focus" style="justify-content: flex-end; padding-bottom: 0;">
+              <div class="converge-wrap" id="convergeWrap" style="margin-bottom: 8px;">
+                <div class="dew-ring"></div>
+                <div class="dew-ring"></div>
+                <div class="dew-ring"></div>
+                <div class="dew-core"></div>
+              </div>
+              <div class="qi-badge" style="margin-top: 0; margin-bottom: 6px;">
+                <span class="qi-icon">✦</span>
+                <span>仙露凝聚中</span>
+              </div>
+            </div>
+
+            <!-- 底部 -->
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">灵力</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" id="bar1"
+                       style="width: 25%; background: linear-gradient(90deg, var(--teal-dim), var(--gold));"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--gold);" id="pctText1">25%</span>
+              </div>
+              <div class="mini-stats">
+                <span>🔥 <span class="val highlight" style="color:var(--gold);" id="calVal1">99</span> <span style="color:var(--text-disabled);">千卡</span></span>
+                <span>👣 <span class="val">2,074</span> <span style="color:var(--text-disabled);">步</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2: 云游 (未达标) — 水墨山影 + 雾气 -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+
+          <div class="immersive-bg">
+            <img src="../assets/raw/encounter/ink_mountains_empty_1772677719066.png"
+                 style="opacity: 0.15; filter: blur(1px);">
+          </div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <!-- 雾气遮罩 -->
+          <div class="fog-veil">
+            <div class="fog-icon">☁</div>
+            <div class="fog-text">云深不知处</div>
+            <div class="fog-sub">待仙子探寻</div>
+          </div>
+
+          <div class="page-content">
+            <div class="top-label">
+              <div class="cat-tag">CLOUD JOURNEY</div>
+              <div class="main-title" style="color: var(--teal);">云 游</div>
+            </div>
+
+            <div style="flex:1;"></div>
+
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">历练</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" id="encBar1"
+                       style="width: 53%; background: linear-gradient(90deg, var(--teal-dim), var(--teal));"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--text-secondary);" id="encPct1">53%</span>
+              </div>
+              <div class="mini-stats">
+                <span>⏱ <span class="val" id="exVal1">16</span><span style="color:var(--text-disabled);"> / 30 分钟</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 3: 周天 (部分点亮) -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+
+          <div class="immersive-bg">
+            <img src="../assets/raw/star-chart/star_chart_bg_1772677961781.png"
+                 style="opacity: 0.1;">
+          </div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <div class="page-content">
+            <div class="top-label">
+              <div class="cat-tag">CELESTIAL CYCLE</div>
+              <div class="main-title" style="color: var(--moon-white);">周 天</div>
+            </div>
+
+            <div class="star-center">
+              <div class="star-grid-immersive" id="starGrid1">
+                <div class="star-row-i">
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">子</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">丑</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">寅</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">卯</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">辰</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">巳</div></div>
+                </div>
+                <div class="star-row-i">
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">午</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">未</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">申</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">酉</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">戌</div></div>
+                  <div class="star-cell"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">亥</div></div>
+                </div>
+              </div>
+              <div class="zhou-badge" id="zhouBadge1">3 / 12 时辰</div>
+            </div>
+
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">周天</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" id="starBar1"
+                       style="width: 25%; background: linear-gradient(90deg, rgba(224,247,250,0.3), var(--moon-white));"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--moon-white);" id="starPct1">25%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 全达标 ========== -->
+  <div class="col">
+    <div class="col-label">全 达 标</div>
+    <div class="watch-frame">
+      <div class="watch-pager">
+
+        <!-- PAGE 1: 聚灵 满溢 -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+
+          <div class="immersive-bg">
+            <img src="../assets/raw/jade-vase/jade_vase_glow_v2_1772678541981.png"
+                 style="object-fit: contain; opacity: 0.12; transform: scale(1.5); filter: blur(2px);">
+          </div>
+          <!-- 金色氛围光 -->
+          <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 45%, rgba(200,169,110,0.08) 0%, transparent 70%);"></div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <div class="particles" id="particles2"></div>
+
+          <div class="page-content">
+            <div class="top-label">
+              <div class="cat-tag">SPIRIT GATHERING</div>
+              <div class="main-title" style="color: var(--gold); text-shadow: 0 0 20px rgba(200,169,110,0.3);">聚 灵</div>
+            </div>
+
+            <div class="center-focus">
+              <div class="vase-img-hero">
+                <div class="vase-aura" style="background:radial-gradient(circle, rgba(200,169,110,0.2) 0%, rgba(200,169,110,0.08) 35%, transparent 65%); width:120px; height:120px;"></div>
+                <div class="vase-pic" style="box-shadow: 0 0 30px rgba(200,169,110,0.25);">
+                  <img src="../assets/raw/jade-vase/jade_vase_glow_v2_1772678541981.png" alt="玉净瓶·满溢">
+                </div>
+              </div>
+              <div class="qi-badge" style="background:rgba(200,169,110,0.15); border-color:rgba(200,169,110,0.25);">
+                <span class="qi-icon">✦</span>
+                <span>仙露已满·圆满</span>
+              </div>
+            </div>
+
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">灵力</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill"
+                       style="width: 100%; background: linear-gradient(90deg, var(--teal-dim), var(--gold)); box-shadow: 0 0 8px rgba(200,169,110,0.3);"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--gold); text-shadow: 0 0 8px rgba(200,169,110,0.4);">100%</span>
+              </div>
+              <div class="mini-stats">
+                <span>🔥 <span class="val highlight" style="color:var(--gold);">432</span> <span style="color:var(--text-disabled);">千卡</span></span>
+                <span>👣 <span class="val">12,340</span> <span style="color:var(--text-disabled);">步</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2: 云游 达标 — 沉浸式仙境 -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+
+          <div class="immersive-bg">
+            <img src="../assets/raw/sceneries/scenery_misty_mountains_1772677749787.png"
+                 style="opacity: 0.55;">
+          </div>
+          <!-- 仙境氛围光 -->
+          <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%, rgba(78,205,196,0.05) 0%, transparent 60%);"></div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <div class="particles" id="particles3"></div>
+
+          <div class="page-content">
+            <div class="top-label">
+              <div class="cat-tag">CLOUD JOURNEY</div>
+              <div class="main-title" style="color: var(--teal);">云 游</div>
+            </div>
+
+            <!-- 中央：仙境名 + 灵物 -->
+            <div class="encounter-center">
+              <div class="scenery-name">云雾仙山</div>
+              <div class="scenery-desc">Misty Mountains</div>
+              <div class="loot-badge">
+                <span class="loot-icon">❄️</span>
+                <span class="loot-name">天山雪莲</span>
+              </div>
+            </div>
+
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">历练</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill"
+                       style="width: 100%; background: linear-gradient(90deg, var(--teal-dim), var(--teal)); box-shadow: 0 0 8px rgba(78,205,196,0.3);"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--teal);">150%</span>
+              </div>
+              <div class="mini-stats">
+                <span>⏱ <span class="val highlight" style="color:var(--teal);">45</span><span style="color:var(--text-disabled);"> / 30 分钟</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 3: 周天 全亮 -->
+        <div class="watch-page">
+          <div class="page-dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+
+          <div class="immersive-bg">
+            <img src="../assets/raw/star-chart/star_chart_bg_1772677961781.png"
+                 style="opacity: 0.2;">
+          </div>
+          <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 40%, rgba(224,247,250,0.04) 0%, transparent 60%);"></div>
+          <div class="gradient-top"></div>
+          <div class="gradient-bottom"></div>
+
+          <div class="page-content">
+            <div class="top-label">
+              <div class="cat-tag">CELESTIAL CYCLE</div>
+              <div class="main-title" style="color: var(--moon-white); text-shadow: 0 0 15px rgba(224,247,250,0.2);">周 天</div>
+            </div>
+
+            <div class="star-center">
+              <div class="star-grid-immersive">
+                <div class="star-row-i">
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">子</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">丑</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">寅</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">卯</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">辰</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">巳</div></div>
+                </div>
+                <div class="star-row-i">
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">午</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">未</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">申</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">酉</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">戌</div></div>
+                  <div class="star-cell lit"><div class="star-orb-wrap"><div class="star-orb-glow"></div><div class="star-orb"></div></div><div class="star-label">亥</div></div>
+                </div>
+              </div>
+              <div class="zhou-badge" style="background:rgba(224,247,250,0.12);border-color:rgba(224,247,250,0.2);text-shadow:0 0 8px rgba(224,247,250,0.3);">
+                ✦ 周天圆满 · 12 / 12
+              </div>
+            </div>
+
+            <div class="bottom-stats">
+              <div class="progress-row">
+                <span class="progress-label">周天</span>
+                <div class="progress-bar">
+                  <div class="progress-bar-fill"
+                       style="width: 100%; background: linear-gradient(90deg, rgba(224,247,250,0.3), var(--moon-white)); box-shadow: 0 0 8px rgba(224,247,250,0.3);"></div>
+                </div>
+                <span class="progress-pct" style="color: var(--moon-white);">100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 控制面板 -->
+<div class="controls">
+  <div class="ctrl-title">交 互 控 制</div>
+  <div class="ctrl">
+    <div class="ctrl-label">卡路里 <b id="calLbl">99</b></div>
+    <input type="range" id="calR" min="0" max="500" value="99">
+  </div>
+  <div class="ctrl">
+    <div class="ctrl-label">运动分钟 <b id="exLbl">16</b></div>
+    <input type="range" id="exR" min="0" max="60" value="16">
+  </div>
+  <div class="ctrl">
+    <div class="ctrl-label">站立时辰 <b id="standLbl">3</b></div>
+    <input type="range" id="standR" min="0" max="12" value="3">
+  </div>
+</div>
+
+<script>
+// 粒子效果
+function createParticles(containerId, color, count) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.bottom = (Math.random() * 30) + '%';
+    p.style.width = (1 + Math.random() * 2) + 'px';
+    p.style.height = p.style.width;
+    p.style.background = color;
+    p.style.animationDuration = (4 + Math.random() * 6) + 's';
+    p.style.animationDelay = (Math.random() * 5) + 's';
+    container.appendChild(p);
+  }
+}
+createParticles('particles1', 'rgba(200,169,110,0.3)', 8);
+createParticles('particles2', 'rgba(200,169,110,0.4)', 10);
+createParticles('particles3', 'rgba(78,205,196,0.3)', 6);
+
+// 聚灵粒子凝聚 — 从四周飞向中心
+(function() {
+  const wrap = document.getElementById('convergeWrap');
+  if (!wrap) return;
+  const cx = 65, cy = 65; // center of 130x130
+  for (let i = 0; i < 20; i++) {
+    const angle = (Math.PI * 2 / 20) * i + (Math.random() - 0.5) * 0.5;
+    const dist = 50 + Math.random() * 25; // further out
+    const sx = Math.cos(angle) * dist;
+    const sy = Math.sin(angle) * dist;
+    const p = document.createElement('div');
+    p.className = 'converge-particle';
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    p.style.setProperty('--sx', sx + 'px');
+    p.style.setProperty('--sy', sy + 'px');
+    p.style.setProperty('--dur', (2 + Math.random() * 2.5) + 's');
+    p.style.setProperty('--delay', (Math.random() * 3) + 's');
+    const size = (2.5 + Math.random() * 3) + 'px'; // bigger
+    p.style.width = size;
+    p.style.height = size;
+    p.style.background = Math.random() > 0.3
+      ? 'rgba(200,169,110,' + (0.6 + Math.random() * 0.4) + ')'
+      : 'rgba(78,205,196,' + (0.5 + Math.random() * 0.4) + ')';
+    p.style.boxShadow = '0 0 6px ' + p.style.background;
+    wrap.appendChild(p);
+  }
+})();
+
+// 控制面板 — 卡路里
+document.getElementById('calR').addEventListener('input', e => {
+  const v = +e.target.value;
+  document.getElementById('calLbl').textContent = v;
+  const pct = Math.min(100, Math.round(v / 400 * 100));
+  document.getElementById('pctText1').textContent = pct + '%';
+  document.getElementById('bar1').style.width = pct + '%';
+  document.getElementById('calVal1').textContent = v;
+});
+
+// 控制面板 — 运动分钟
+document.getElementById('exR').addEventListener('input', e => {
+  const v = +e.target.value;
+  document.getElementById('exLbl').textContent = v;
+  const pct = Math.min(100, Math.round(v / 30 * 100));
+  document.getElementById('encBar1').style.width = pct + '%';
+  document.getElementById('encPct1').textContent = pct + '%';
+  document.getElementById('exVal1').textContent = v;
+});
+
+// 控制面板 — 站立时辰
+document.getElementById('standR').addEventListener('input', e => {
+  const v = +e.target.value;
+  document.getElementById('standLbl').textContent = v;
+  const pct = Math.round(v / 12 * 100);
+  document.getElementById('starBar1').style.width = pct + '%';
+  document.getElementById('starPct1').textContent = pct + '%';
+  document.getElementById('zhouBadge1').textContent = v + ' / 12 时辰';
+  document.querySelectorAll('#starGrid1 .star-cell').forEach((el, i) => {
+    el.classList.toggle('lit', i < v);
+  });
+});
+</script>
+
+</body>
+</html>

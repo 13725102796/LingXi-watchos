@@ -37,6 +37,7 @@ struct Copywriting: Codable {
     let journey: JourneyCopy
     let breakthrough: [String]
     let lotus: LotusCopy
+    let journeyView: JourneyViewCopy
     let onboarding: OnboardingCopy
 
     struct SleepCopy: Codable {
@@ -72,6 +73,27 @@ struct Copywriting: Codable {
         let calm: [String]
         let ripple: [String]
         let demon: [String]
+    }
+
+    struct JourneyViewCopy: Codable {
+        let vase: VaseCopy
+        let encounter: EncounterCopy
+        let star: StarCopy
+
+        struct VaseCopy: Codable {
+            let empty: String
+            let partial: String
+            let full: String
+        }
+        struct EncounterCopy: Codable {
+            let empty: String
+            let achieved: [String]
+        }
+        struct StarCopy: Codable {
+            let none: String
+            let partial: String
+            let full: String
+        }
     }
 
     struct OnboardingCopy: Codable {
