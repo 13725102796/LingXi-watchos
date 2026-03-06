@@ -38,19 +38,24 @@ struct JadeVaseSection: View {
                 backgroundParticles
                     .ignoresSafeArea()
 
+                // Layer 2.5: 凝聚效果（全屏层，不被 VStack 裁剪）
+                if !isFull {
+                    convergeView(w: w, h: h)
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
+                }
+
                 // Layer 3: 内容
                 VStack(spacing: 0) {
                     // 顶部标题
                     topTitle(w: w)
 
-                    // 中央：凝聚效果 或 瓶子（填满中间区域）
                     if isFull {
                         Spacer()
                         fullVaseView(w: w, h: h)
-                        Spacer()
-                    } else {
-                        convergeView(w: w, h: h)
                     }
+
+                    Spacer()
 
                     // Badge
                     badgeLabel
@@ -87,7 +92,7 @@ struct JadeVaseSection: View {
                     .aspectRatio(contentMode: .fill)
                     .offset(y: -h * 0.05)
                     .blendMode(.screen)
-                    .opacity(isFull ? 0.12 : 0.08)
+                    .opacity(isFull ? 0.18 : 0.13)
             }
             .clipped()
     }
@@ -212,7 +217,7 @@ struct JadeVaseSection: View {
             let t = timeline.date.timeIntervalSinceReferenceDate
             Canvas { context, size in
                 let cx = size.width / 2
-                let cy = size.height * 0.8
+                let cy = size.height * 0.62
 
                 // 涟漪环
                 let ringRadius = size.width * 0.3
@@ -290,10 +295,10 @@ struct JadeVaseSection: View {
     private var badgeLabel: some View {
         HStack(spacing: 4) {
             Text("✦")
-                .font(.system(size: 8))
+                .font(.system(size: 10))
                 .opacity(0.8)
             Text(isFull ? "仙露已满·圆满" : "仙露凝聚中")
-                .font(.system(size: 9, design: .serif))
+                .font(.system(size: 11, design: .serif))
                 .tracking(1)
         }
         .foregroundStyle(LingXiColors.gold)
@@ -316,14 +321,14 @@ struct JadeVaseSection: View {
             // 进度条行
             HStack(spacing: 8) {
                 Text("灵力")
-                    .font(.system(size: 8))
+                    .font(.system(size: 10))
                     .foregroundStyle(LingXiColors.textSecondary)
 
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule()
                             .fill(Color.white.opacity(0.06))
-                            .frame(height: 2)
+                            .frame(height: 3)
                         Capsule()
                             .fill(
                                 LinearGradient(
@@ -332,14 +337,14 @@ struct JadeVaseSection: View {
                                     endPoint: .trailing
                                 )
                             )
-                            .frame(width: geo.size.width * animatedFill, height: 2)
+                            .frame(width: geo.size.width * animatedFill, height: 3)
                             .shadow(color: isFull ? LingXiColors.gold.opacity(0.3) : .clear, radius: 4)
                     }
                 }
-                .frame(height: 2)
+                .frame(height: 3)
 
                 Text("\(percent)%")
-                    .font(.system(size: 9, design: .serif).monospacedDigit())
+                    .font(.system(size: 11, design: .serif).monospacedDigit())
                     .foregroundStyle(LingXiColors.gold)
             }
 
@@ -347,23 +352,23 @@ struct JadeVaseSection: View {
             HStack {
                 HStack(spacing: 2) {
                     Text("🔥")
-                        .font(.system(size: 7))
+                        .font(.system(size: 9))
                     Text("\(Int(calories))")
-                        .font(.system(size: 8).monospacedDigit())
+                        .font(.system(size: 10).monospacedDigit())
                         .foregroundStyle(LingXiColors.gold)
                     Text("千卡")
-                        .font(.system(size: 7))
+                        .font(.system(size: 9))
                         .foregroundStyle(LingXiColors.textDisabled)
                 }
                 Spacer()
                 HStack(spacing: 2) {
                     Text("👣")
-                        .font(.system(size: 7))
+                        .font(.system(size: 9))
                     Text("\(steps)")
-                        .font(.system(size: 8).monospacedDigit())
+                        .font(.system(size: 10).monospacedDigit())
                         .foregroundStyle(LingXiColors.textPrimary)
                     Text("步")
-                        .font(.system(size: 7))
+                        .font(.system(size: 9))
                         .foregroundStyle(LingXiColors.textDisabled)
                 }
             }
