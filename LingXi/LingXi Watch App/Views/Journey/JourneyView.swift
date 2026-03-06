@@ -19,31 +19,31 @@ struct JourneyView: View {
     }
 
     var body: some View {
-        ZStack {
-            LingXiColors.backgroundGradient.ignoresSafeArea()
+        TabView {
+            // Page 1: 聚灵·玉净瓶
+            JadeVaseSection(
+                calories: appState.todayCalories,
+                steps: appState.todaySteps
+            )
 
+            // Page 2: 云游·秘境奇遇（暂保留旧版）
             ScrollView {
-                VStack(spacing: 12) {
-                    JadeVaseSection(
-                        calories: appState.todayCalories,
-                        steps: appState.todaySteps
-                    )
-
-                    EncounterSection(
-                        exerciseMinutes: appState.todayExercise,
-                        journeyDays: LingXiKeys.journeyDays
-                    )
-
-                    StarChartSection(
-                        standHours: appState.todayStand
-                    )
-
-                    Spacer().frame(height: 12)
-                }
+                EncounterSection(
+                    exerciseMinutes: appState.todayExercise,
+                    journeyDays: LingXiKeys.journeyDays
+                )
                 .padding(.horizontal, 8)
-                .padding(.top, 8)
+            }
+
+            // Page 3: 周天·本命星图（暂保留旧版）
+            ScrollView {
+                StarChartSection(
+                    standHours: appState.todayStand
+                )
+                .padding(.horizontal, 8)
             }
         }
+        .tabViewStyle(.verticalPage)
         .onAppear {
             Task { await refreshActivity() }
         }

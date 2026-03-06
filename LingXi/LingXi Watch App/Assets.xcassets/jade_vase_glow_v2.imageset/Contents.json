@@ -1,0 +1,13 @@
+{
+  "images" : [
+    {
+      "filename" : "jade_vase_glow_v2@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
