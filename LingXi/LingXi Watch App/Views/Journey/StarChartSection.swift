@@ -86,11 +86,10 @@ struct StarChartSection: View {
     private func background(w: CGFloat, h: CGFloat) -> some View {
         Color.black
             .overlay {
-                Image("star_chart_bg")
+                Image("zhoutian_background")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .blendMode(.screen)
-                    .opacity(0.2)
+                    .opacity(0.35)
             }
             .clipped()
     }
@@ -218,8 +217,7 @@ struct StarChartSection: View {
     // MARK: - 中心图标
 
     private func centerIcon(size: CGFloat) -> some View {
-        // 目前只有 center_bud，全亮时也先用 bud（等 bloom 图补充后替换）
-        let imageName = isAllLit ? "zhoutian_center_bud" : "zhoutian_center_bud"
+        let imageName = isAllLit ? "zhoutian_center_lotus" : "zhoutian_center_bud"
 
         return Image(imageName)
             .resizable()
