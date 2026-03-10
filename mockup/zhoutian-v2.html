@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>周天 · 太阴琉璃风</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&display=swap');
+
+  :root {
+    --bg-deep: #0C0A14;
+    --bg-purple: #12101F;
+    --jade: #4ECDC4;
+    --jade-dim: #2A7A76;
+    --jade-glow: rgba(78,205,196,0.4);
+    --amber: #C8A96E;
+    --amber-glow: rgba(200,169,110,0.4);
+    --moon-white: #E0F7FA;
+    --moon-dim: rgba(224,247,250,0.15);
+    --text-primary: #E8E4F0;
+    --text-secondary: #6A6A8A;
+    --text-disabled: #2A2A3E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08080D;
+    font-family: 'Noto Serif SC', serif;
+    display: flex; flex-direction: column;
+    align-items: center; padding: 40px 20px 80px;
+    min-height: 100vh; gap: 32px;
+  }
+  h1 { color: var(--text-primary); font-weight: 200; letter-spacing: 8px; font-size: 20px; }
+  .subtitle { color: var(--text-secondary); font-size: 11px; letter-spacing: 3px; font-weight: 300; }
+
+  .row { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .col { text-align: center; }
+  .col-label { font-size: 10px; color: var(--text-secondary); letter-spacing: 3px; margin-bottom: 14px; font-weight: 300; }
+
+  /* Watch Frame — 太阴琉璃底色 */
+  .watch-frame {
+    width: 198px; height: 242px; border-radius: 42px;
+    background: var(--bg-deep); overflow: hidden; position: relative;
+    box-shadow: 0 0 0 2px #1A1830, 0 0 0 4px #12101E, 0 20px 60px rgba(0,0,0,0.7);
+  }
+
+  /* 深紫蓝晕染背景 */
+  .cosmic-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 50% 40%, #1A1530 0%, #12101F 40%, var(--bg-deep) 100%);
+  }
+
+  /* 渐变遮罩 */
+  .gradient-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 60px; z-index: 3;
+    background: linear-gradient(180deg, rgba(12,10,20,0.8) 0%, rgba(12,10,20,0.3) 50%, transparent 100%);
+  }
+  .gradient-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px; z-index: 3;
+    background: linear-gradient(0deg, rgba(12,10,20,0.9) 0%, rgba(12,10,20,0.4) 50%, transparent 100%);
+  }
+
+  /* 内容层 */
+  .page-content {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 16px 14px 14px;
+  }
+
+  .top-label { text-align: center; }
+  .top-label .cat-tag {
+    font-size: 7px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text-secondary); font-weight: 300;
+  }
+  .top-label .main-title {
+    font-size: 15px; font-weight: 400; letter-spacing: 5px; margin-top: 2px;
+  }
+
+  /* ================================================ */
+  /*  花环容器                                         */
+  /* ================================================ */
+  .ring-wrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    width: 160px; height: 160px; z-index: 5;
+  }
+
+  /* 圆环底线 */
+  .ring-circle {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 0.5px solid rgba(78,205,196,0.06);
+  }
+
+  /* 神兽节点 */
+  .beast-node {
+    position: absolute;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1px;
+    transition: all 0.6s ease;
+  }
+
+  /* 神兽图标 — 琉璃玉刻风格（CSS 模拟） */
+  .beast-icon {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 500;
+    color: var(--text-disabled);
+    border: 1px solid rgba(78,205,196,0.08);
+    border-radius: 50%;
+    background: rgba(78,205,196,0.02);
+    transition: all 0.6s ease;
+    position: relative;
+  }
+
+  .beast-node.lit .beast-icon {
+    color: var(--jade);
+    border-color: rgba(78,205,196,0.3);
+    background: rgba(78,205,196,0.08);
+    box-shadow: 0 0 8px var(--jade-glow), 0 0 16px rgba(78,205,196,0.15);
+    text-shadow: 0 0 6px var(--jade-glow);
+  }
+
+  /* 神兽光晕 */
+  .beast-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px; height: 28px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,196,0.25) 0%, rgba(78,205,196,0.05) 50%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .beast-node.lit .beast-glow {
+    opacity: 1;
+    animation: beastPulse 3s ease-in-out infinite;
+  }
+  @keyframes beastPulse {
+    0%, 100% { transform: translate(-50%,-50%) scale(0.8); opacity: 0.5; }
+    50% { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
+  }
+
+  /* 神兽名 */
+  .beast-name {
+    font-size: 5px; letter-spacing: 1px;
+    color: var(--text-disabled);
+    transition: color 0.5s;
+  }
+  .beast-node.lit .beast-name {
+    color: rgba(78,205,196,0.6);
+  }
+
+  /* ================================================ */
+  /*  中心 — 能量漩涡 / 真气清莲                        */
+  /* ================================================ */
+  .center-core {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* 能量漩涡（未达标） */
+  .vortex {
+    width: 50px; height: 50px; position: relative;
+  }
+  .vortex-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(78,205,196,0.1);
+    animation: vortexSpin 8s linear infinite;
+  }
+  .vortex-ring:nth-child(2) {
+    inset: 6px;
+    border-color: rgba(224,247,250,0.08);
+    animation-duration: 6s;
+    animation-direction: reverse;
+  }
+  .vortex-ring:nth-child(3) {
+    inset: 14px;
+    border-color: rgba(78,205,196,0.12);
+    animation-duration: 4s;
+  }
+  @keyframes vortexSpin {
+    0% { transform: rotate(0deg); border-color: rgba(78,205,196,0.06); }
+    50% { border-color: rgba(78,205,196,0.15); }
+    100% { transform: rotate(360deg); border-color: rgba(78,205,196,0.06); }
+  }
+  .vortex-core {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(224,247,250,0.4) 0%, rgba(78,205,196,0.1) 50%, transparent 70%);
+    animation: coreBreath 3s ease-in-out infinite;
+  }
+  @keyframes coreBreath {
+    0%, 100% { transform: translate(-50%,-50%) scale(0.8); opacity: 0.5; }
+    50% { transform: translate(-50%,-50%) scale(1.5); opacity: 1; }
+  }
+  .vortex-aura {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 60%);
+    animation: auraBreath 4s ease-in-out infinite;
+  }
+  @keyframes auraBreath {
+    0%, 100% { transform: translate(-50%,-50%) scale(0.9); }
+    50% { transform: translate(-50%,-50%) scale(1.15); }
+  }
+
+  /* 真气清莲（全达标） */
+  .qi-lotus {
+    width: 60px; height: 60px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lotus-petal {
+    position: absolute; top: 50%; left: 50%;
+    width: 4px; height: 18px;
+    background: linear-gradient(180deg, rgba(78,205,196,0.6) 0%, rgba(78,205,196,0.05) 100%);
+    border-radius: 2px 2px 0 0;
+    transform-origin: bottom center;
+    filter: blur(0.5px);
+  }
+  .lotus-inner-petal {
+    position: absolute; top: 50%; left: 50%;
+    width: 3px; height: 12px;
+    background: linear-gradient(180deg, rgba(200,169,110,0.5) 0%, rgba(200,169,110,0.05) 100%);
+    border-radius: 2px 2px 0 0;
+    transform-origin: bottom center;
+    filter: blur(0.3px);
+  }
+  .lotus-core {
+    position: relative; z-index: 1;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,196,0.8) 0%, rgba(200,169,110,0.3) 50%, transparent 80%);
+    box-shadow: 0 0 12px var(--jade-glow), 0 0 30px rgba(78,205,196,0.2);
+    animation: lotusCore 3s ease-in-out infinite;
+  }
+  @keyframes lotusCore {
+    0%, 100% { transform: scale(0.9); box-shadow: 0 0 8px var(--jade-glow), 0 0 20px rgba(78,205,196,0.15); }
+    50% { transform: scale(1.15); box-shadow: 0 0 16px var(--jade-glow), 0 0 40px rgba(78,205,196,0.25); }
+  }
+  .lotus-aura {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px; height: 80px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,196,0.08) 0%, rgba(200,169,110,0.03) 40%, transparent 65%);
+    animation: auraBreath 3.5s ease-in-out infinite;
+  }
+
+  /* 真气粒子 */
+  .qi-particle {
+    position: absolute; border-radius: 50%;
+    animation: qiFloat linear infinite;
+  }
+  @keyframes qiFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    15% { opacity: 0.8; }
+    85% { opacity: 0.3; }
+    100% { transform: translateY(-60px) scale(0.3); opacity: 0; }
+  }
+
+  /* Badge */
+  .zhou-badge {
+    padding: 3px 10px; border-radius: 12px;
+    font-size: 10px; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .zhou-badge.dim {
+    background: rgba(78,205,196,0.06);
+    border: 1px solid rgba(78,205,196,0.1);
+    color: var(--text-secondary);
+  }
+  .zhou-badge.full {
+    background: rgba(78,205,196,0.12);
+    border: 1px solid rgba(78,205,196,0.2);
+    color: var(--jade);
+    text-shadow: 0 0 8px rgba(78,205,196,0.3);
+  }
+
+  /* 灵尘粒子 */
+  .dust-particles {
+    position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none;
+  }
+  .dust {
+    position: absolute; width: 1.5px; height: 1.5px;
+    border-radius: 50%;
+    animation: dustRise linear infinite;
+  }
+  @keyframes dustRise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-200px) translateX(10px); opacity: 0; }
+  }
+
+  /* 控制面板 */
+  .controls {
+    display: flex; flex-direction: column; gap: 14px; width: 300px;
+    padding: 20px; border-radius: 12px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  }
+  .ctrl-title { color: var(--text-secondary); font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
+  .ctrl { display: flex; flex-direction: column; gap: 4px; }
+  .ctrl-label { color: var(--text-secondary); font-size: 10px; display: flex; justify-content: space-between; }
+  .ctrl-label b { color: var(--text-primary); font-weight: 400; }
+  input[type="range"] { width: 100%; height: 2px; -webkit-appearance: none; background: rgba(255,255,255,0.06); border-radius: 1px; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--jade); cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>周 天 · 太 阴 琉 璃</h1>
+<p class="subtitle">琉璃神兽纹样 · 真气化形</p>
+
+<div class="row">
+
+  <!-- ========== 未达标 ========== -->
+  <div class="col">
+    <div class="col-label">未 达 标</div>
+    <div class="watch-frame">
+      <div class="cosmic-bg"></div>
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+      <div class="dust-particles" id="dust1"></div>
+
+      <!-- 花环 -->
+      <div class="ring-wrap" id="ring1">
+        <div class="ring-circle" style="width:130px;height:130px;"></div>
+        <div class="ring-circle" style="width:90px;height:90px;border-color:rgba(78,205,196,0.03);"></div>
+      </div>
+
+      <!-- 中心：能量漩涡 -->
+      <div class="center-core">
+        <div class="vortex">
+          <div class="vortex-aura"></div>
+          <div class="vortex-ring"></div>
+          <div class="vortex-ring"></div>
+          <div class="vortex-ring"></div>
+          <div class="vortex-core"></div>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--jade); opacity: 0.6;">周 天</div>
+        </div>
+        <div style="flex:1;"></div>
+        <div style="display:flex;justify-content:center;padding-bottom:14px;">
+          <div class="zhou-badge dim" id="badge1">
+            <span style="font-size:9px;">✦</span>
+            <span id="badgeText1">3 / 12 时辰</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 全达标 ========== -->
+  <div class="col">
+    <div class="col-label">全 达 标</div>
+    <div class="watch-frame">
+      <div class="cosmic-bg"></div>
+      <!-- 全亮氛围光 -->
+      <div style="position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 45%, rgba(78,205,196,0.06) 0%, rgba(200,169,110,0.02) 30%, transparent 60%);"></div>
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+      <div class="dust-particles" id="dust2"></div>
+
+      <!-- 花环 -->
+      <div class="ring-wrap" id="ring2">
+        <div class="ring-circle" style="width:130px;height:130px;border-color:rgba(78,205,196,0.1);"></div>
+        <div class="ring-circle" style="width:90px;height:90px;border-color:rgba(200,169,110,0.05);"></div>
+      </div>
+
+      <!-- 中心：真气清莲 -->
+      <div class="center-core" id="lotusCenter">
+        <div class="qi-lotus" id="qiLotus">
+          <div class="lotus-aura"></div>
+          <!-- 外层花瓣 (8瓣) -->
+          <!-- 内层花瓣 (6瓣) -->
+          <div class="lotus-core"></div>
+        </div>
+      </div>
+
+      <!-- 真气粒子 -->
+      <div style="position:absolute;inset:0;z-index:6;overflow:hidden;pointer-events:none;" id="qiParticles"></div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--jade); text-shadow: 0 0 15px rgba(78,205,196,0.3);">周 天</div>
+        </div>
+        <div style="flex:1;"></div>
+        <div style="display:flex;justify-content:center;padding-bottom:14px;">
+          <div class="zhou-badge full">
+            <span style="font-size:9px;">✦</span>
+            <span>周天圆满 · 12 / 12</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 控制面板 -->
+<div class="controls">
+  <div class="ctrl-title">交 互 控 制</div>
+  <div class="ctrl">
+    <div class="ctrl-label">站立时辰 <b id="standLbl">3</b></div>
+    <input type="range" id="standR" min="0" max="12" value="3">
+  </div>
+</div>
+
+<script>
+// 神兽纹样（简化汉字，模拟玉刻风格）
+const beasts = [
+  { name: '鼠', char: '子' },
+  { name: '牛', char: '丑' },
+  { name: '虎', char: '寅' },
+  { name: '兔', char: '卯' },
+  { name: '龙', char: '辰' },
+  { name: '蛇', char: '巳' },
+  { name: '马', char: '午' },
+  { name: '羊', char: '未' },
+  { name: '猴', char: '申' },
+  { name: '鸡', char: '酉' },
+  { name: '狗', char: '戌' },
+  { name: '猪', char: '亥' }
+];
+
+function createRing(containerId, litCount) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  wrap.querySelectorAll('.beast-node').forEach(n => n.remove());
+
+  const cx = 80, cy = 80, radius = 62;
+  beasts.forEach((b, i) => {
+    const angle = (-Math.PI / 2) + (Math.PI * 2 / 12) * i;
+    const x = cx + Math.cos(angle) * radius - 10;
+    const y = cy + Math.sin(angle) * radius - 12;
+
+    const node = document.createElement('div');
+    node.className = 'beast-node' + (i < litCount ? ' lit' : '');
+    node.style.left = x + 'px';
+    node.style.top = y + 'px';
+
+    const delay = (i * 0.25).toFixed(2);
+    node.innerHTML = `
+      <div class="beast-glow" style="animation-delay:${delay}s;"></div>
+      <div class="beast-icon">${b.char}</div>
+      <div class="beast-name">${b.name}</div>
+    `;
+    wrap.appendChild(node);
+  });
+}
+
+createRing('ring1', 3);
+createRing('ring2', 12);
+
+// 创建清莲花瓣
+function createLotusPetals() {
+  const lotus = document.getElementById('qiLotus');
+  // 外层 8 瓣
+  for (let i = 0; i < 8; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'lotus-petal';
+    const angle = (360 / 8) * i;
+    petal.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+    petal.style.animation = `petalSway 4s ease-in-out ${i * 0.3}s infinite`;
+    lotus.insertBefore(petal, lotus.querySelector('.lotus-core'));
+  }
+  // 内层 6 瓣
+  for (let i = 0; i < 6; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'lotus-inner-petal';
+    const angle = (360 / 6) * i + 30;
+    petal.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+    petal.style.animation = `petalSway 3.5s ease-in-out ${i * 0.4 + 0.2}s infinite`;
+    lotus.insertBefore(petal, lotus.querySelector('.lotus-core'));
+  }
+}
+createLotusPetals();
+
+// 花瓣微动
+const petalStyle = document.createElement('style');
+petalStyle.textContent = `
+  @keyframes petalSway {
+    0%, 100% { opacity: 0.6; filter: blur(0.5px); }
+    50% { opacity: 1; filter: blur(0.3px); transform-origin: bottom center; }
+  }
+`;
+document.head.appendChild(petalStyle);
+
+// 灵尘粒子
+function createDust(id, count, color, alpha) {
+  const container = document.getElementById(id);
+  if (!container) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'dust';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.bottom = (Math.random() * 30) + '%';
+    p.style.background = color.replace('ALPHA', alpha);
+    p.style.animationDuration = (5 + Math.random() * 7) + 's';
+    p.style.animationDelay = (Math.random() * 6) + 's';
+    container.appendChild(p);
+  }
+}
+createDust('dust1', 5, 'rgba(78,205,196,ALPHA)', '0.15');
+createDust('dust2', 8, 'rgba(78,205,196,ALPHA)', '0.25');
+
+// 真气粒子（全达标）
+(function() {
+  const container = document.getElementById('qiParticles');
+  if (!container) return;
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'qi-particle';
+    p.style.left = (35 + Math.random() * 30) + '%';
+    p.style.top = (40 + Math.random() * 20) + '%';
+    p.style.width = (1 + Math.random() * 2) + 'px';
+    p.style.height = p.style.width;
+    const isJade = Math.random() > 0.3;
+    p.style.background = isJade
+      ? `rgba(78,205,196,${0.3 + Math.random() * 0.4})`
+      : `rgba(200,169,110,${0.2 + Math.random() * 0.3})`;
+    p.style.boxShadow = `0 0 4px ${p.style.background}`;
+    p.style.animationDuration = (3 + Math.random() * 4) + 's';
+    p.style.animationDelay = (Math.random() * 5) + 's';
+    container.appendChild(p);
+  }
+})();
+
+// 控制面板
+document.getElementById('standR').addEventListener('input', e => {
+  const v = +e.target.value;
+  document.getElementById('standLbl').textContent = v;
+  createRing('ring1', v);
+
+  const badge = document.getElementById('badge1');
+  const text = document.getElementById('badgeText1');
+  if (v >= 12) {
+    badge.className = 'zhou-badge full';
+    text.textContent = '周天圆满 · 12 / 12';
+  } else {
+    badge.className = 'zhou-badge dim';
+    text.textContent = v + ' / 12 时辰';
+  }
+});
+</script>
+
+</body>
+</html>

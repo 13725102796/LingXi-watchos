@@ -26,14 +26,11 @@ struct JourneyView: View {
                 steps: appState.todaySteps
             )
 
-            // Page 2: 云游·秘境奇遇（暂保留旧版）
-            ScrollView {
-                EncounterSection(
-                    exerciseMinutes: appState.todayExercise,
-                    journeyDays: LingXiKeys.journeyDays
-                )
-                .padding(.horizontal, 8)
-            }
+            // Page 2: 云游·秘境奇遇
+            EncounterSection(
+                exerciseMinutes: appState.todayExercise,
+                journeyDays: LingXiKeys.journeyDays
+            )
 
             // Page 3: 周天·本命星图（暂保留旧版）
             ScrollView {

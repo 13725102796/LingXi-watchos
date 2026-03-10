@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>周天 · 两版方案对比</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0A0A0F;
+    --moon-white: #E0F7FA;
+    --moon-glow: #B8E8ED;
+    --petal-pink: #E8B4C8;
+    --petal-glow: #D4A0B8;
+    --star-blue: #A8C8E8;
+    --star-glow: #7BADD4;
+    --gold: #C8A96E;
+    --text-primary: #F0EDE4;
+    --text-secondary: #8A8A9A;
+    --text-disabled: #3A3A4A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08080D;
+    font-family: 'Noto Serif SC', serif;
+    display: flex; flex-direction: column;
+    align-items: center; padding: 40px 20px 80px;
+    min-height: 100vh; gap: 40px;
+  }
+  h1 { color: var(--text-primary); font-weight: 200; letter-spacing: 8px; font-size: 20px; }
+  .page-subtitle { color: var(--text-secondary); font-size: 11px; letter-spacing: 3px; font-weight: 300; }
+
+  .section-title {
+    color: var(--text-secondary); font-size: 12px; letter-spacing: 5px;
+    font-weight: 300; margin-bottom: 10px;
+  }
+
+  /* Watch Frame */
+  .watch-frame {
+    width: 198px; height: 242px; border-radius: 42px;
+    background: var(--bg); overflow: hidden; position: relative;
+    box-shadow: 0 0 0 2px #222230, 0 0 0 4px #15151E, 0 20px 60px rgba(0,0,0,0.7);
+  }
+
+  .gradient-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 70px; z-index: 1;
+    background: linear-gradient(180deg, rgba(10,10,15,0.85) 0%, rgba(10,10,15,0.4) 50%, transparent 100%);
+  }
+  .gradient-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 90px; z-index: 1;
+    background: linear-gradient(0deg, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.5) 50%, transparent 100%);
+  }
+
+  .page-content {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 18px 14px 14px;
+  }
+
+  .top-label { text-align: center; }
+  .top-label .cat-tag {
+    font-size: 7px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text-secondary); font-weight: 300;
+  }
+  .top-label .main-title {
+    font-size: 15px; font-weight: 400; letter-spacing: 5px; margin-top: 2px;
+  }
+
+  .bottom-stats { margin-top: auto; width: 100%; }
+  .progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .progress-label { font-size: 10px; color: var(--text-secondary); white-space: nowrap; letter-spacing: 1px; }
+  .progress-bar { flex: 1; height: 3px; border-radius: 1px; background: rgba(255,255,255,0.06); overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 1px; }
+  .progress-pct { font-size: 11px; font-weight: 400; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+
+  .row { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .col { text-align: center; }
+  .col-label { font-size: 10px; color: var(--text-secondary); letter-spacing: 3px; margin-bottom: 14px; font-weight: 300; }
+
+  /* ================================================ */
+  /*  方案 A: 月相花环                                  */
+  /* ================================================ */
+
+  .flower-ring-wrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px; height: 150px;
+  }
+
+  /* 花环上的时辰 */
+  .petal-node {
+    position: absolute;
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .petal-orb {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--text-disabled);
+    transition: all 0.6s ease;
+    position: relative;
+  }
+  .petal-node.lit .petal-orb {
+    width: 8px; height: 8px;
+    background: var(--petal-pink);
+    box-shadow: 0 0 8px var(--petal-glow), 0 0 20px rgba(232,180,200,0.3);
+  }
+  .petal-node .petal-label {
+    font-size: 10px; margin-top: 1px;
+    font-weight: 300; transition: all 0.5s;
+    filter: grayscale(1) opacity(0.3);
+  }
+  .petal-node.lit .petal-label {
+    filter: grayscale(0) opacity(0.9);
+  }
+
+  /* 花瓣光晕 */
+  .petal-node.lit .petal-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 22px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,180,200,0.4) 0%, rgba(232,180,200,0.1) 40%, transparent 70%);
+    animation: petalPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes petalPulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(0.8); }
+    50% { opacity: 1; transform: translate(-50%,-50%) scale(1.3); }
+  }
+
+  /* 花环连线 */
+  .ring-line {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 0.5px solid rgba(232,180,200,0.06);
+  }
+
+  /* 中心月相/莲花 */
+  .center-moon {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+  }
+  .moon-icon {
+    font-size: 28px;
+    filter: drop-shadow(0 0 12px rgba(232,180,200,0.4));
+    animation: moonFloat 4s ease-in-out infinite;
+  }
+  @keyframes moonFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-3px) scale(1.05); }
+  }
+  .moon-aura {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,180,200,0.1) 0%, rgba(232,180,200,0.03) 40%, transparent 65%);
+    animation: auraBreath 3s ease-in-out infinite;
+  }
+  @keyframes auraBreath {
+    0%, 100% { transform: translate(-50%,-50%) scale(0.9); opacity: 0.6; }
+    50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+  }
+
+  /* 方案A badge */
+  .zhou-badge-a {
+    padding: 3px 10px; border-radius: 12px;
+    background: rgba(232,180,200,0.1);
+    border: 1px solid rgba(232,180,200,0.15);
+    font-size: 10px; color: var(--petal-pink); letter-spacing: 1px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* 方案A 漂浮花瓣粒子 */
+  .petal-particles {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
+  }
+  .petal-particle {
+    position: absolute; width: 2px; height: 2px;
+    background: rgba(232,180,200,0.25); border-radius: 50%;
+    animation: petalFloat linear infinite;
+  }
+  @keyframes petalFloat {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-180px) translateX(15px) rotate(180deg); opacity: 0; }
+  }
+
+  /* ================================================ */
+  /*  方案 B: 星河流光                                  */
+  /* ================================================ */
+
+  .starriver-canvas {
+    position: absolute; inset: 0; z-index: 2;
+  }
+
+  /* 星河弧线上的时辰 */
+  .star-node {
+    position: absolute;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .star-orb-b {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--text-disabled);
+    transition: all 0.6s ease;
+    position: relative; z-index: 1;
+  }
+  .star-node.lit .star-orb-b {
+    width: 7px; height: 7px;
+    background: var(--star-blue);
+    box-shadow: 0 0 8px var(--star-glow), 0 0 16px rgba(168,200,232,0.3);
+  }
+  .star-node .star-label-b {
+    font-size: 10px;
+    font-weight: 300; transition: all 0.5s;
+    filter: grayscale(1) opacity(0.3);
+  }
+  .star-node.lit .star-label-b {
+    filter: grayscale(0) opacity(0.9);
+  }
+  .star-node.lit .star-glow-b {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px; height: 18px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(168,200,232,0.35) 0%, transparent 65%);
+    animation: starPulseB 3s ease-in-out infinite;
+  }
+  @keyframes starPulseB {
+    0%, 100% { opacity: 0.4; transform: translate(-50%,-50%) scale(0.8); }
+    50% { opacity: 1; transform: translate(-50%,-50%) scale(1.4); }
+  }
+
+  /* 星河流光效果 */
+  .river-glow {
+    position: absolute; z-index: 1;
+    width: 180px; height: 80px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(168,200,232,0.03) 20%,
+      rgba(168,200,232,0.06) 50%,
+      rgba(168,200,232,0.03) 80%,
+      transparent 100%
+    );
+    border-radius: 50%;
+    filter: blur(8px);
+  }
+
+  /* 流光粒子 */
+  .river-particle {
+    position: absolute; border-radius: 50%;
+    animation: riverFlow linear infinite;
+  }
+  @keyframes riverFlow {
+    0% { transform: translateX(-40px); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.4; }
+    100% { transform: translateX(40px); opacity: 0; }
+  }
+
+  /* 倒影效果 */
+  .river-reflection {
+    position: absolute; bottom: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 140px; height: 30px;
+    background: linear-gradient(180deg,
+      rgba(168,200,232,0.04) 0%,
+      rgba(168,200,232,0.01) 50%,
+      transparent 100%
+    );
+    border-radius: 50%;
+    filter: blur(4px);
+  }
+
+  /* 方案B badge */
+  .zhou-badge-b {
+    padding: 3px 10px; border-radius: 12px;
+    background: rgba(168,200,232,0.08);
+    border: 1px solid rgba(168,200,232,0.12);
+    font-size: 10px; color: var(--star-blue); letter-spacing: 1px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* 控制面板 */
+  .controls {
+    display: flex; flex-direction: column; gap: 14px; width: 300px; margin-top: 8px;
+    padding: 20px; border-radius: 12px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  }
+  .ctrl-title { color: var(--text-secondary); font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
+  .ctrl { display: flex; flex-direction: column; gap: 4px; }
+  .ctrl-label { color: var(--text-secondary); font-size: 10px; display: flex; justify-content: space-between; }
+  .ctrl-label b { color: var(--text-primary); font-weight: 400; }
+  input[type="range"] { width: 100%; height: 2px; -webkit-appearance: none; background: rgba(255,255,255,0.06); border-radius: 1px; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>周 天 · 重 设 计</h1>
+<p class="page-subtitle">两版方案对比</p>
+
+<!-- ===== 方案 A: 月相花环 ===== -->
+<div class="section-title">方 案 A · 月 相 花 环</div>
+<div class="row">
+
+  <!-- A 未达标 -->
+  <div class="col">
+    <div class="col-label">未 达 标</div>
+    <div class="watch-frame">
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+      <div class="petal-particles" id="petalParticles1"></div>
+
+      <!-- 花环 -->
+      <div class="flower-ring-wrap" id="flowerRing1">
+        <div class="ring-line"></div>
+        <div class="ring-line" style="width:80px;height:80px;border-color:rgba(232,180,200,0.03);"></div>
+      </div>
+
+      <!-- 中心月相 -->
+      <div class="center-moon">
+        <div class="moon-aura"></div>
+        <div class="moon-icon" style="opacity:0.3; filter:grayscale(0.5) drop-shadow(0 0 8px rgba(232,180,200,0.2));">🌙</div>
+      </div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--petal-pink); opacity: 0.7;">周 天</div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="display:flex;justify-content:center;padding-bottom:14px;">
+          <div class="zhou-badge-a" id="badgeA1">
+            <span style="font-size:9px;">✦</span>
+            <span id="badgeTextA1">3 / 12 时辰</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A 全达标 -->
+  <div class="col">
+    <div class="col-label">全 达 标</div>
+    <div class="watch-frame">
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+      <div class="petal-particles" id="petalParticles2"></div>
+
+      <!-- 全亮氛围光 -->
+      <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 45%, rgba(232,180,200,0.06) 0%, transparent 60%);"></div>
+
+      <div class="flower-ring-wrap" id="flowerRing2"></div>
+
+      <div class="center-moon">
+        <div class="moon-aura" style="background:radial-gradient(circle, rgba(232,180,200,0.15) 0%, rgba(232,180,200,0.05) 40%, transparent 65%);"></div>
+        <div class="moon-icon" style="filter: drop-shadow(0 0 16px rgba(232,180,200,0.5));">🌸</div>
+      </div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--petal-pink); text-shadow: 0 0 15px rgba(232,180,200,0.3);">周 天</div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="display:flex;justify-content:center;padding-bottom:14px;">
+          <div class="zhou-badge-a" style="background:rgba(232,180,200,0.15);border-color:rgba(232,180,200,0.25);">
+            <span style="font-size:9px;">✦</span>
+            <span>花开圆满 · 12 / 12</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 方案 B: 星河流光 ===== -->
+<div class="section-title" style="margin-top:30px;">方 案 B · 星 河 流 光</div>
+<div class="row">
+
+  <!-- B 未达标 -->
+  <div class="col">
+    <div class="col-label">未 达 标</div>
+    <div class="watch-frame">
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+
+      <!-- 星河底光 -->
+      <div class="river-glow" style="opacity:0.5;"></div>
+      <div class="river-reflection" style="opacity:0.3;"></div>
+
+      <!-- 星河弧线上的时辰 -->
+      <div id="starRiver1"></div>
+
+      <!-- 流光粒子 -->
+      <div id="riverParticles1" style="position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;"></div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--star-blue); opacity: 0.7;">周 天</div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="display:flex;justify-content:center;margin-bottom:8px;">
+          <div class="zhou-badge-b" id="badgeB1">
+            <span style="font-size:9px;">✦</span>
+            <span id="badgeTextB1">3 / 12 时辰</span>
+          </div>
+        </div>
+
+        <div class="bottom-stats">
+          <div class="progress-row">
+            <span class="progress-label">周天</span>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" id="barB1"
+                   style="width: 25%; background: linear-gradient(90deg, rgba(168,200,232,0.3), var(--star-blue));"></div>
+            </div>
+            <span class="progress-pct" style="color: var(--star-blue);" id="pctB1">25%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B 全达标 -->
+  <div class="col">
+    <div class="col-label">全 达 标</div>
+    <div class="watch-frame">
+      <div class="gradient-top"></div>
+      <div class="gradient-bottom"></div>
+
+      <!-- 全亮氛围 -->
+      <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 40%, rgba(168,200,232,0.06) 0%, transparent 60%);"></div>
+
+      <div class="river-glow"></div>
+      <div class="river-reflection"></div>
+
+      <div id="starRiver2"></div>
+
+      <div id="riverParticles2" style="position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;"></div>
+
+      <div class="page-content">
+        <div class="top-label">
+          <div class="cat-tag">CELESTIAL CYCLE</div>
+          <div class="main-title" style="color: var(--star-blue); text-shadow: 0 0 15px rgba(168,200,232,0.3);">周 天</div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div style="display:flex;justify-content:center;margin-bottom:8px;">
+          <div class="zhou-badge-b" style="background:rgba(168,200,232,0.12);border-color:rgba(168,200,232,0.2);">
+            <span style="font-size:9px;">✦</span>
+            <span>星河圆满 · 12 / 12</span>
+          </div>
+        </div>
+
+        <div class="bottom-stats">
+          <div class="progress-row">
+            <span class="progress-label">周天</span>
+            <div class="progress-bar">
+              <div class="progress-bar-fill"
+                   style="width: 100%; background: linear-gradient(90deg, rgba(168,200,232,0.3), var(--star-blue)); box-shadow: 0 0 8px rgba(168,200,232,0.3);"></div>
+            </div>
+            <span class="progress-pct" style="color: var(--star-blue); text-shadow: 0 0 8px rgba(168,200,232,0.3);">100%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 控制面板 -->
+<div class="controls">
+  <div class="ctrl-title">交 互 控 制</div>
+  <div class="ctrl">
+    <div class="ctrl-label">站立时辰 <b id="standLbl">3</b></div>
+    <input type="range" id="standR" min="0" max="12" value="3">
+  </div>
+</div>
+
+<script>
+const zodiac = ['🐭','🐮','🐯','🐰','🐲','🐍','🐴','🐑','🐵','🐔','🐶','🐷'];
+const hours = zodiac;
+
+// ===== 方案 A: 月相花环 =====
+function createFlowerRing(containerId, litCount) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  // 清空已有节点（保留 ring-line）
+  wrap.querySelectorAll('.petal-node').forEach(n => n.remove());
+
+  const cx = 75, cy = 75, radius = 58;
+  hours.forEach((h, i) => {
+    const angle = (-Math.PI / 2) + (Math.PI * 2 / 12) * i;
+    const x = cx + Math.cos(angle) * radius - 8;
+    const y = cy + Math.sin(angle) * radius - 8;
+
+    const node = document.createElement('div');
+    node.className = 'petal-node' + (i < litCount ? ' lit' : '');
+    node.style.left = x + 'px';
+    node.style.top = y + 'px';
+
+    let inner = '';
+    if (i < litCount) {
+      inner += `<div class="petal-glow" style="animation-delay:${i * 0.23}s;"></div>`;
+    }
+    inner += `<div class="petal-orb"></div>`;
+    inner += `<div class="petal-label">${h}</div>`;
+    node.innerHTML = inner;
+    wrap.appendChild(node);
+  });
+}
+
+createFlowerRing('flowerRing1', 3);
+createFlowerRing('flowerRing2', 12);
+
+// 花瓣粒子
+function createPetalParticles(id, count, alpha) {
+  const container = document.getElementById(id);
+  if (!container) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal-particle';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.bottom = (Math.random() * 20) + '%';
+    p.style.width = (1 + Math.random() * 2) + 'px';
+    p.style.height = p.style.width;
+    p.style.background = `rgba(232,180,200,${alpha})`;
+    p.style.animationDuration = (5 + Math.random() * 7) + 's';
+    p.style.animationDelay = (Math.random() * 5) + 's';
+    container.appendChild(p);
+  }
+}
+createPetalParticles('petalParticles1', 5, 0.15);
+createPetalParticles('petalParticles2', 8, 0.25);
+
+// ===== 方案 B: 星河流光 =====
+function createStarRiver(containerId, litCount) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  // S 型弧线分布 — 上弧6个 + 下弧6个
+  const watchW = 198, watchH = 242;
+  const points = [];
+
+  // 上弧：从左到右，微弯
+  for (let i = 0; i < 6; i++) {
+    const t = i / 5;
+    const x = 22 + t * (watchW - 44);
+    const y = watchH * 0.32 + Math.sin(t * Math.PI) * (-20);
+    points.push({ x, y });
+  }
+  // 下弧：从左到右，微弯（反向）
+  for (let i = 0; i < 6; i++) {
+    const t = i / 5;
+    const x = 22 + t * (watchW - 44);
+    const y = watchH * 0.52 + Math.sin(t * Math.PI) * 18;
+    points.push({ x, y });
+  }
+
+  points.forEach((pt, i) => {
+    const node = document.createElement('div');
+    node.className = 'star-node' + (i < litCount ? ' lit' : '');
+    node.style.left = (pt.x - 8) + 'px';
+    node.style.top = (pt.y - 8) + 'px';
+    node.style.zIndex = '5';
+
+    let inner = '';
+    if (i < litCount) {
+      inner += `<div class="star-glow-b" style="animation-delay:${i * 0.25}s;"></div>`;
+    }
+    inner += `<div class="star-orb-b"></div>`;
+    inner += `<div class="star-label-b">${hours[i]}</div>`;
+    node.innerHTML = inner;
+    wrap.appendChild(node);
+  });
+}
+
+createStarRiver('starRiver1', 3);
+createStarRiver('starRiver2', 12);
+
+// 流光粒子
+function createRiverParticles(id, count, alpha) {
+  const container = document.getElementById(id);
+  if (!container) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'river-particle';
+    p.style.top = (30 + Math.random() * 40) + '%';
+    p.style.left = (20 + Math.random() * 60) + '%';
+    p.style.width = (1 + Math.random() * 1.5) + 'px';
+    p.style.height = p.style.width;
+    p.style.background = `rgba(168,200,232,${alpha})`;
+    p.style.animationDuration = (3 + Math.random() * 4) + 's';
+    p.style.animationDelay = (Math.random() * 4) + 's';
+    container.appendChild(p);
+  }
+}
+createRiverParticles('riverParticles1', 6, 0.2);
+createRiverParticles('riverParticles2', 10, 0.35);
+
+// ===== 控制面板 =====
+document.getElementById('standR').addEventListener('input', e => {
+  const v = +e.target.value;
+  document.getElementById('standLbl').textContent = v;
+  const pct = Math.round(v / 12 * 100);
+
+  // A
+  createFlowerRing('flowerRing1', v);
+  document.getElementById('barA1').style.width = pct + '%';
+  document.getElementById('pctA1').textContent = pct + '%';
+  document.getElementById('badgeTextA1').textContent = v >= 12 ? '花开圆满 · 12 / 12' : v + ' / 12 时辰';
+
+  // B
+  createStarRiver('starRiver1', v);
+  document.getElementById('barB1').style.width = pct + '%';
+  document.getElementById('pctB1').textContent = pct + '%';
+  document.getElementById('badgeTextB1').textContent = v >= 12 ? '星河圆满 · 12 / 12' : v + ' / 12 时辰';
+});
+</script>
+
+</body>
+</html>
