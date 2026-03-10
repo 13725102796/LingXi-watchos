@@ -32,13 +32,10 @@ struct JourneyView: View {
                 journeyDays: LingXiKeys.journeyDays
             )
 
-            // Page 3: 周天·本命星图（暂保留旧版）
-            ScrollView {
-                StarChartSection(
-                    standHours: appState.todayStand
-                )
-                .padding(.horizontal, 8)
-            }
+            // Page 3: 周天·本命星图
+            StarChartSection(
+                standHours: appState.todayStand
+            )
         }
         .tabViewStyle(.verticalPage)
         .onAppear {

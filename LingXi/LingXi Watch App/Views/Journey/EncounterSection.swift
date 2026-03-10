@@ -11,7 +11,7 @@ struct EncounterSection: View {
 
     private let goalMinutes: Int = 30
 
-    private var isAchieved: Bool { true } // TODO: 恢复为 exerciseMinutes >= goalMinutes
+    private var isAchieved: Bool { exerciseMinutes >= goalMinutes }
     private var fillRatio: CGFloat {
         min(1.0, CGFloat(exerciseMinutes) / CGFloat(goalMinutes))
     }
